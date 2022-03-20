@@ -1,6 +1,27 @@
 function Phonolo() {
     "use strict";
 
+    function addPopup(element, event, getPopup) {
+        element.addEventListener(event, e => {
+            const popup = getPopup();
+            popup.classList.add("phonolo-popup");
+
+            popup.style.top = "5px";
+            popup.style.right = "5px";
+
+            clearPopups();
+            document.body.appendChild(popup);
+
+            document.body.addEventListener("click", clearPopups, {capture: true, once: true});
+        });
+    }
+
+    function clearPopups(e) {
+        if (!e || !e.target.classList.contains("phonolo-popup"))
+            document.querySelectorAll(".phonolo-popup").forEach(popup => { popup.remove(); });
+    }
+
+
     class Inventory {
 
         segments = {};
@@ -42,6 +63,13 @@ function Phonolo() {
             }
         }
 
+        getSegments(features) {
+            return Object.entries(features).reduce(
+                (prev, [feat, val]) => prev.filter(x => new Set(this.features[feat][val]).has(x)),
+                Object.values(this.segments)
+            );
+        }
+
         parse(text) {
             // https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
             const escape = /[-\/\\^$*+?.()|[\]{}]/g;
@@ -49,7 +77,7 @@ function Phonolo() {
                 Object.keys(this.phonemes)
                     .sort()
                     .reverse()
-                    .map(s => s.normalize().replace(escape, '\\$&'))
+                    .map(s => s.normalize().replace(escape, "\\$&"))
                     .join("|")
                 })(\\s*)`, "uy"
             );
@@ -89,17 +117,7 @@ function Phonolo() {
 
             if (withPopup) {
                 elem.classList.add("phonolo-interact");
-                const popup = this.createPopup();
-                elem.addEventListener("click", () => {
-                    document.querySelector("#phonolo-popup")?.remove();
-                    document.body.appendChild(popup);
-
-                    document.body.addEventListener("click", e => {
-                        if (e.target.id !== "phonolo-popup") {
-                            document.querySelector("#phonolo-popup")?.remove();
-                        }
-                    }, {capture: true, once: true});
-                });
+                addPopup(elem, "click", this.createPopup.bind(this));
             }
 
             return elem;
@@ -192,23 +210,32 @@ function Phonolo() {
             this.features = features;
         }
 
-        createElement(brackets = true) {
+        createElement(withPopup = false, inventory, brackets = true) {
             const elem = document.createElement("div");
             elem.classList.add("phonolo", "phonolo-featurebundle");
 
-            const list = document.createElement("div");
+            const list = document.createElement("table");
             list.classList.add("phonolo-features");
             for (const [feat, val] of Object.entries(this.features)) {
-                const valDiv = document.createElement("div");
-                valDiv.classList.add("phonolo-feature-value");
-                valDiv.innerText = val;
-                list.appendChild(valDiv);
+                const tr = document.createElement("tr");
+                tr.classList.add("phonolo-feature");
 
-                const featDiv = document.createElement("div");
-                featDiv.classList.add("phonolo-feature-feature");
-                featDiv.innerText = feat;
-                list.appendChild(featDiv);
+                const valEntry = document.createElement("td");
+                valEntry.classList.add("phonolo-feature-value");
+                valEntry.innerText = val;
+                tr.appendChild(valEntry);
 
+                const featEntry = document.createElement("td");
+                featEntry.classList.add("phonolo-feature-feature");
+                featEntry.innerText = feat;
+                tr.appendChild(featEntry);
+
+                if (withPopup && inventory) {
+                    tr.classList.add("phonolo-interact");
+                    addPopup(tr, "click", this.createPopup.bind(this, {[feat]: val}, inventory));
+                }
+
+                list.appendChild(tr);
             }
             elem.appendChild(list);
 
@@ -221,9 +248,50 @@ function Phonolo() {
 
                 list.before(left);
                 list.after(right);
+
+                if (withPopup && inventory) {
+                    for (const bracket of [left, right]) {
+                        bracket.classList.add("phonolo-interact");
+                        addPopup(bracket, "click", this.createPopup.bind(this, this.features, inventory));
+                        bracket.addEventListener("mouseenter", e => {
+                            left.classList.add("phonolo-active");
+                            right.classList.add("phonolo-active");
+                        });
+                        bracket.addEventListener("mouseleave", e => {
+                            left.classList.remove("phonolo-active");
+                            right.classList.remove("phonolo-active");
+                        });
+                    }
+                }
             }
 
             return elem;
+        }
+
+        createPopup(features, inventory) {
+            const popup = document.createElement("div");
+            popup.classList.add("phonolo", "phonolo-popup", "phonolo-naturalclass");
+
+            const entries = Object.entries(features);
+            let innerText;
+            if (entries.length === 1) {
+                innerText = `${entries[0][1]}${entries[0][0]}`;
+            } else {
+                innerText = "these features";
+            }
+
+            popup.innerHTML = `
+                <div class="phonolo-naturalclass-header">
+                    Segments with ${innerText}:
+                </div>
+            `
+
+            const list = document.createElement("div");
+            list.classList.add("phonolo-naturalclass-segments");
+            list.innerText = `${inventory.getSegments(features).map(p => p.symbol).join(", ")}`;
+            popup.appendChild(list);
+
+            return popup;
         }
 
     }
@@ -243,31 +311,35 @@ function Phonolo() {
             this.environmentRight = environmentRight;
         }
 
-        createElement() {
+        createElement(inventory) {
             const elem = document.createElement("div");
             elem.classList.add("phonolo", "phonolo-rule");
             
-            elem.appendChild(this.target.createElement(true));
+            elem.appendChild(this.target.createElement(true, inventory));
 
             const arrow = document.createElement("div");
             arrow.classList.add("phonolo-rule-arrow");
             arrow.innerText = "→";
             elem.appendChild(arrow);
 
-            elem.appendChild(this.result.createElement(true));
+            elem.appendChild(this.result.createElement(true, inventory));
 
             const slash = document.createElement("div");
             slash.classList.add("phonolo-rule-slash");
             slash.innerText = "/";
             elem.appendChild(slash);
 
-            elem.appendChild(this.environmentLeft.createElement(true));
+            this.environmentLeft?.forEach(item => {
+                elem.appendChild(item.createElement(true, inventory));
+            });
 
             const underscore = document.createElement("div");
             underscore.classList.add("phonolo-rule-underscore");
             elem.appendChild(underscore);
 
-            elem.appendChild(this.environmentRight.createElement(true));
+            this.environmentRight?.forEach(item => {
+                elem.appendChild(item.createElement(true, inventory));
+            });
             
             return elem;
         }

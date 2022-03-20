@@ -1,15 +1,17 @@
 .phonolo {
     font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI';
     box-sizing: border-box;
+    --phonolo-active-color: pink;
 }
 
 .phonolo * {
     box-sizing: inherit;
 }
 
-.phonolo-interact:hover {
+.phonolo-interact:hover, .phonolo .phonolo-active {
     cursor: pointer;
-    color: pink;
+    color: var(--phonolo-active-color);
+    border-color: var(--phonolo-active-color);
 }
 
 .phonolo-popup {
@@ -18,6 +20,7 @@
     border: 1px solid black;
     padding: 10px;
 }
+
 
 .phonolo-phonegrid {
     display: grid;
@@ -49,24 +52,26 @@
     grid-area: phones;
 }
 
+
 .phonolo-featurebundle {
     display: flex;
     justify-content: center;
     font-size: large;
-    margin: 5px;
     gap: 5px;
     min-height: fit-content;
 }
 
 .phonolo-features {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    grid-auto-rows: auto;
-    column-gap: 0;
+    border: 0;
+    border-spacing: 0;
 }
 
 .phonolo-features .phonolo-feature-value {
-    justify-self: end;
+    text-align: right;
+}
+
+.phonolo-features .phonolo-feature-feature {
+    text-align: left;
 }
 
 .phonolo-bracket-left, .phonolo-bracket-right {
@@ -81,6 +86,7 @@
 .phonolo-bracket-right {
     border-left: 0;
 }
+
 
 .phonolo-rule {
     display: flex;
@@ -104,5 +110,18 @@
     border-bottom: 1px solid black;
     height: 1em;
     width: 1em;
+}
+
+.phonolo-naturalclass {
+    width: min-content;
+}
+
+.phonolo-naturalclass .phonolo-naturalclass-header {
+    width: max-content;
+    font-size: large;
+}
+
+.phonolo-naturalclass .phonolo-naturalclass-segments {
+    width: 100%;
 }
 
