@@ -74,6 +74,12 @@ function Phonolo() {
                 elem.addEventListener("click", () => {
                     document.querySelector("#phonolo-popup")?.remove();
                     document.body.appendChild(popup);
+
+                    document.body.addEventListener("click", e => {
+                        if (e.target.id !== "phonolo-popup") {
+                            document.querySelector("#phonolo-popup")?.remove();
+                        }
+                    }, {capture: true, once: true});
                 });
             }
 
@@ -231,6 +237,7 @@ function Phonolo() {
         Inventory,
         Phone,
         Phoneme,
-        Word
+        Word,
+        FeatureBundle
     };
 }

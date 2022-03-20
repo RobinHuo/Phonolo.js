@@ -27,6 +27,7 @@
         "symbol name"
         "symbol phones";
     column-gap: 5px;
+    margin-bottom: 10px;
 }
 
 .phonolo-phonegrid .phonolo-symbol {
@@ -53,7 +54,6 @@
     justify-content: center;
     font-size: large;
     margin: 5px;
-    margin-top: 10px;
     gap: 5px;
 }
 
