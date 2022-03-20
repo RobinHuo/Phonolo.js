@@ -74,7 +74,7 @@ function Phonolo() {
             // https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
             const escape = /[-\/\\^$*+?.()|[\]{}]/g;
             const segmentRegex = new RegExp(`(${
-                Object.keys(this.phonemes)
+                Object.keys(this.segments)
                     .sort()
                     .reverse()
                     .map(s => s.normalize().replace(escape, "\\$&"))
@@ -87,7 +87,7 @@ function Phonolo() {
             while (segmentRegex.lastIndex < text.length) {
                 result = segmentRegex.exec(text);
                 if (result) {
-                    segments.push(this.phonemes[result[1]]);
+                    segments.push(this.segments[result[1]]);
                 } else {
                     throw new Error("Failed to parse string");
                 }
