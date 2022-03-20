@@ -12,12 +12,12 @@ function Phonolo() {
             clearPopups();
             document.body.appendChild(popup);
 
-            document.body.addEventListener("click", clearPopups, {capture: true, once: true});
+            document.body.addEventListener("click", clearPopups, {capture: true});
         });
     }
 
     function clearPopups(e) {
-        if (!e || !e.target.classList.contains("phonolo-popup"))
+        if (!e || !e.target.matches(".phonolo-popup, .phonolo-popup *"))
             document.querySelectorAll(".phonolo-popup").forEach(popup => { popup.remove(); });
     }
 
