@@ -3,44 +3,63 @@ function Phonolo() {
 
     class Inventory {
 
-        phonemes = {};
-        featureToPhoneme = {};
+        segments = {};
+        features = {};
+        featureSystem;
 
-        constructor(phonemes) {
-            for (const phon of phonemes) {
-                this.addPhoneme(phon);
+        static fromObject(obj, json = false) {
+            if (json) obj = JSON.parse(obj);
+            const segments = [];
+            for (const symbol in obj) {
+                segments.push(new Phone(symbol, obj[symbol]));
             }
+            return new Inventory(segments);
         }
 
-        addPhoneme(phoneme) {
-            this.phonemes[phoneme.symbol] = phoneme;
-            for (const feat in phoneme.features) {
-                if (!(feat in this.featureToPhoneme))
-                    this.featureToPhoneme[feat] = {};
-                if (!(phoneme.features[feat] in this.featureToPhoneme[feat]))
-                    this.featureToPhoneme[feat][phoneme.features[feat]] = [];
-                this.featureToPhoneme[feat][phoneme.features[feat]].push(phoneme);
+        static fromFeatureSystem(featureSystem, segments) {
+            const phonemes = [];
+            for (const segment of segments) {
+                phonemes.push(new Phone(segment, featureSystem.segments[segment].features));
+            }
+            return new Inventory(phonemes, featureSystem);
+        }
+
+        constructor(segments, featureSystem) {
+            for (const segment of segments) {
+                this.addSegment(segment);
+            }
+            if (featureSystem) this.featureSystem = featureSystem;
+        }
+
+        addSegment(segment) {
+            this.segments[segment.symbol] = segment;
+            for (const feat in segment.features) {
+                if (!(feat in this.features))
+                    this.features[feat] = {};
+                if (!(segment.features[feat] in this.features[feat]))
+                    this.features[feat][segment.features[feat]] = [];
+                this.features[feat][segment.features[feat]].push(segment);
             }
         }
 
         parse(text) {
             // https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
             const escape = /[-\/\\^$*+?.()|[\]{}]/g;
-            const phonemeRegex = new RegExp(
+            const segmentRegex = new RegExp(`(${
                 Object.keys(this.phonemes)
                     .sort()
                     .reverse()
-                    .map(s => s.replace(escape, '\\$&'))
+                    .map(s => s.normalize().replace(escape, '\\$&'))
                     .join("|")
-                , "uy"
+                })(\\s*)`, "uy"
             );
 
             const segments = [];
             let result;
-            while (phonemeRegex.lastIndex < text.length) {
-                result = phonemeRegex.exec(text);
+            while (segmentRegex.lastIndex < text.length) {
+                result = segmentRegex.exec(text);
                 if (result) {
-                    segments.push(this.phonemes[result[0]]);
+                    segments.push(this.phonemes[result[1]]);
                 } else {
                     throw new Error("Failed to parse string");
                 }
@@ -54,13 +73,13 @@ function Phonolo() {
     class Phone {
 
         symbol;
-        name;
         features = {};
+        name;
 
-        constructor(symbol, name, features) {
-            this.symbol = symbol;
-            this.name = name;
+        constructor(symbol, features, name) {
+            this.symbol = symbol.normalize();
             if (features) this.features = features;
+            if (name) this.name = name;
         }
 
         createElement(withPopup = false) {
@@ -97,7 +116,7 @@ function Phonolo() {
                         ${this.symbol}
                     </div>
                     <div class="phonolo-name">
-                        ${this.name}
+                        ${this.name ?? ""}
                     </div>
                     <div class="phonolo-allophones">
                     </div>
@@ -105,29 +124,6 @@ function Phonolo() {
             `;
 
             popup.appendChild(new FeatureBundle(this.features).createElement());
-
-            return popup;
-        }
-
-    }
-
-
-    class Phoneme extends Phone {
-
-        allophones = [];
-
-        constructor(symbol, name, features, allophones = []) {
-            super(symbol, name, features);
-            for (const phon of allophones) {
-                this.allophones.push(phon);
-            }
-        }
-
-        createPopup() {
-            const popup = super.createPopup();
-
-            const allophoneList = popup.querySelector(".phonolo-allophones");
-            allophoneList.innerText = `[${this.allophones.join(", ")}]`;
 
             return popup;
         }
@@ -233,11 +229,57 @@ function Phonolo() {
     }
 
 
+    class Rule {
+
+        target;
+        result;
+        environmentLeft;
+        environmentRight;
+
+        constructor(target, result, environmentLeft, environmentRight) {
+            this.target = target;
+            this.result = result;
+            this.environmentLeft = environmentLeft;
+            this.environmentRight = environmentRight;
+        }
+
+        createElement() {
+            const elem = document.createElement("div");
+            elem.classList.add("phonolo", "phonolo-rule");
+            
+            elem.appendChild(this.target.createElement(true));
+
+            const arrow = document.createElement("div");
+            arrow.classList.add("phonolo-rule-arrow");
+            arrow.innerText = "→";
+            elem.appendChild(arrow);
+
+            elem.appendChild(this.result.createElement(true));
+
+            const slash = document.createElement("div");
+            slash.classList.add("phonolo-rule-slash");
+            slash.innerText = "/";
+            elem.appendChild(slash);
+
+            elem.appendChild(this.environmentLeft.createElement(true));
+
+            const underscore = document.createElement("div");
+            underscore.classList.add("phonolo-rule-underscore");
+            elem.appendChild(underscore);
+
+            elem.appendChild(this.environmentRight.createElement(true));
+            
+            return elem;
+        }
+
+    }
+
+
     return {
         Inventory,
         Phone,
-        Phoneme,
         Word,
-        FeatureBundle
+        FeatureBundle,
+        Rule
     };
 }

@@ -55,6 +55,7 @@
     font-size: large;
     margin: 5px;
     gap: 5px;
+    min-height: fit-content;
 }
 
 .phonolo-features {
@@ -79,5 +80,29 @@
 
 .phonolo-bracket-right {
     border-left: 0;
+}
+
+.phonolo-rule {
+    display: flex;
+    width: max-content;
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: larger;
+}
+
+.phonolo-rule .phonolo-rule-arrow {
+    font-size: 1.2em;
+}
+
+.phonolo-rule .phonolo-rule-slash {
+    font-size: 1.2em;
+}
+
+.phonolo-rule .phonolo-rule-underscore {
+    border-bottom: 1px solid black;
+    height: 1em;
+    width: 1em;
 }
 
