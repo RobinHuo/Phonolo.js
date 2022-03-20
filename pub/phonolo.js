@@ -100,6 +100,11 @@ function Phonolo() {
 
     class Phone {
 
+        static NULL = new Phone("∅");
+        static C = new Phone("C");
+        static V = new Phone("V");
+        static WORD_BOUNDARY = new Phone("#");
+
         symbol;
         features = {};
         name;
@@ -110,20 +115,20 @@ function Phonolo() {
             if (name) this.name = name;
         }
 
-        createElement(withPopup = false) {
+        createElement(withPopup = false, inventory) {
             const elem = document.createElement("span");
             elem.classList.add("phonolo", "phonolo-phone");
             elem.innerText = this.symbol;
 
-            if (withPopup) {
+            if (withPopup && this.features && Object.keys(this.features).length) {
                 elem.classList.add("phonolo-interact");
-                addPopup(elem, "click", this.createPopup.bind(this));
+                addPopup(elem, "click", this.createPopup.bind(this, inventory));
             }
 
             return elem;
         }
 
-        createPopup() {
+        createPopup(inventory) {
             const popup = document.createElement("div");
             popup.id = "phonolo-popup";
             popup.classList.add("phonolo", "phonolo-popup");
@@ -141,7 +146,8 @@ function Phonolo() {
                 </div>
             `;
 
-            popup.appendChild(new FeatureBundle(this.features).createElement());
+            if (this.features && Object.keys(this.features).length)
+                popup.appendChild(new FeatureBundle(this.features).createElement(true, inventory));
 
             return popup;
         }
@@ -154,26 +160,32 @@ function Phonolo() {
         text;
         phonemes;
         phones;
+        inventory;
         dom = {
             element: null,
             state: null
         };
 
-        constructor(text, phonemes, phones) {
+        constructor(text, phonemes, phones, inventory) {
             this.text = text;
             this.phonemes = phonemes;
             if (phones) this.phones = phones;
+            if (inventory) this.inventory = inventory;
         }
 
-        get element() {
+        createElement() {
+            this.dom.element = document.createElement("span");
+            this.dom.element.classList.add("phonolo", "phonolo-word");
+
+            this.dom.element.addEventListener("mouseenter", this.showPhonemic.bind(this));
+            this.dom.element.addEventListener("mouseleave", this.showText.bind(this));
+
+            this.showText();
+        }
+
+        getElement() {
             if (!this.dom.element) {
-                this.dom.element = document.createElement("span");
-                this.dom.element.classList.add("phonolo", "phonolo-word");
-
-                this.dom.element.addEventListener("mouseenter", this.showPhonemic.bind(this));
-                this.dom.element.addEventListener("mouseleave", this.showText.bind(this));
-
-                this.showText();
+                this.createElement();
             }
             return this.dom.element;
         }
@@ -186,7 +198,7 @@ function Phonolo() {
         showPhonemic() {
             this.dom.element.replaceChildren(...this.phonemes.map(phon => {
                 if (typeof phon === "string") return phon;
-                return phon.createElement(true);
+                return phon.createElement(true, this.inventory);
             }));
             this.dom.state = "phonemic";
         }
@@ -194,7 +206,7 @@ function Phonolo() {
         showPhonetic() {
             this.dom.element.replaceChildren(...this.phones.map(phon => {
                 if (typeof phon === "string") return phon;
-                return phon.createElement(true);
+                return phon.createElement(true, this.inventory);
             }));
             this.dom.state = "phonetic";
         }
