@@ -1,0 +1,83 @@
+.phonolo {
+    font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI';
+    box-sizing: border-box;
+}
+
+.phonolo * {
+    box-sizing: inherit;
+}
+
+.phonolo-interact:hover {
+    cursor: pointer;
+    color: pink;
+}
+
+.phonolo-popup {
+    z-index: 5000 !important;
+    position: fixed;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.phonolo-phonegrid {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "symbol name"
+        "symbol phones";
+    column-gap: 5px;
+}
+
+.phonolo-phonegrid .phonolo-symbol {
+    grid-area: symbol;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    font-size: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.phonolo-phonegrid .phonolo-name {
+    grid-area: name;
+    font-size: larger;
+}
+
+.phonolo-phonegrid .phonolo-allophones {
+    grid-area: phones;
+}
+
+.phonolo-featurebundle {
+    display: flex;
+    justify-content: center;
+    font-size: large;
+    margin: 5px;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+.phonolo-features {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-auto-rows: auto;
+    column-gap: 0;
+}
+
+.phonolo-features .phonolo-feature-value {
+    justify-self: end;
+}
+
+.phonolo-bracket-left, .phonolo-bracket-right {
+    width: 20px;
+    border: 4px solid black;
+}
+
+.phonolo-bracket-left {
+    border-right: 0;
+}
+
+.phonolo-bracket-right {
+    border-left: 0;
+}
+
