@@ -158,57 +158,42 @@ function Phonolo() {
     class Word {
 
         text;
-        phonemes;
-        phones;
+        transcription;
         inventory;
-        dom = {
-            element: null,
-            state: null
-        };
+        element;
 
-        constructor(text, phonemes, phones, inventory) {
+        constructor(text, transcription, inventory) {
             this.text = text;
-            this.phonemes = phonemes;
-            if (phones) this.phones = phones;
+            this.transcription = transcription;
             if (inventory) this.inventory = inventory;
         }
 
         createElement() {
-            this.dom.element = document.createElement("span");
-            this.dom.element.classList.add("phonolo", "phonolo-word");
+            this.element = document.createElement("span");
+            this.element.classList.add("phonolo", "phonolo-word");
 
-            this.dom.element.addEventListener("mouseenter", this.showPhonemic.bind(this));
-            this.dom.element.addEventListener("mouseleave", this.showText.bind(this));
+            this.element.addEventListener("mouseenter", this.showTranscription.bind(this));
+            this.element.addEventListener("mouseleave", this.showText.bind(this));
 
             this.showText();
         }
 
         getElement() {
-            if (!this.dom.element) {
+            if (!this.element) {
                 this.createElement();
             }
-            return this.dom.element;
+            return this.element;
         }
 
         showText() {
-            this.dom.element.innerText = this.text;
-            this.dom.state = "text";
+            this.element.innerText = this.text;
         }
 
-        showPhonemic() {
-            this.dom.element.replaceChildren(...this.phonemes.map(phon => {
+        showTranscription() {
+            this.element.replaceChildren(...this.transcription.map(phon => {
                 if (typeof phon === "string") return phon;
                 return phon.createElement(true, this.inventory);
             }));
-            this.dom.state = "phonemic";
-        }
-
-        showPhonetic() {
-            this.dom.element.replaceChildren(...this.phones.map(phon => {
-                if (typeof phon === "string") return phon;
-                return phon.createElement(true, this.inventory);
-            }));
-            this.dom.state = "phonetic";
         }
 
     }

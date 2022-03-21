@@ -30,7 +30,7 @@ const phonemic = [
 ];
 for (let i = 0; i < sentence.length; i++) {
     const trans = english.parse(phonemic[i]);
-    const word = new Word(sentence[i], trans, undefined, english);
+    const word = new Word(sentence[i], trans, english);
     transcription.append(word.getElement(), " ");
 }
 
