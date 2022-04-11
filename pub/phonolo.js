@@ -1,4 +1,4 @@
-function Phonolo() {
+(function () {
     "use strict";
 
     /**
@@ -43,9 +43,9 @@ function Phonolo() {
 
         /**
          * A dictionary of the segments in the inventory.
-         * Maps segment symbol to Phone objects.
+         * Maps segment symbol to Segment objects.
          * 
-         * @type {Object.<string, Phone>}
+         * @type {Object.<string, Segment>}
          */
         segments = {};
 
@@ -53,11 +53,11 @@ function Phonolo() {
          * A dictionary mapping features to feature values and segments.
          * Keys are feature names.
          * Values are objects whose keys are feature values
-         * and values are arrays containing the Phone objects
+         * and values are arrays containing the Segment objects
          * in this.segments that have the corresponding value
          * for the corresponding feature.
          * 
-         * @type {Object.<string, Object.<string, Array.<Phone>>>}
+         * @type {Object.<string, Object.<string, Array.<Segment>>>}
          */
         features = {};
 
@@ -74,7 +74,7 @@ function Phonolo() {
 
         /**
          * Return an Inventory object parsed from obj.
-         * obj should be an object whose keys are Phone symbols
+         * obj should be an object whose keys are Segment symbols
          * and values are feature specifications
          * (objects whose keys are features names and values are feature values).
          * If json is true then obj is assumed to be a JSON string.
@@ -87,7 +87,7 @@ function Phonolo() {
             if (json) obj = JSON.parse(obj);
             const segments = [];
             for (const symbol in obj) {
-                segments.push(new Phone(symbol, obj[symbol]));
+                segments.push(new Segment(symbol, obj[symbol]));
             }
             return new Inventory(segments);
         }
@@ -103,7 +103,7 @@ function Phonolo() {
         static fromFeatureSystem(featureSystem, segments) {
             const phonemes = [];
             for (const segment of segments) {
-                phonemes.push(new Phone(segment, featureSystem.segments[segment].features));
+                phonemes.push(new Segment(segment, featureSystem.segments[segment].features));
             }
             return new Inventory(phonemes, featureSystem);
         }
@@ -112,7 +112,7 @@ function Phonolo() {
          * Create a new Inventory with the given segments
          * and optionally based off the given feature system.
          * 
-         * @param {Array.<Phone>} segments
+         * @param {Array.<Segment>} segments
          * @param {Inventory} [featureSystem]
          */
         constructor(segments, featureSystem) {
@@ -146,7 +146,7 @@ function Phonolo() {
          * 
          * @throws Throws an error if the text cannot be fully parsed.
          * @param {string} text
-         * @returns {Array.<Phone>}
+         * @returns {Array.<Segment>}
          */
         parse(text) {
             // Replacement pattern to escape all special regex symbols
@@ -182,13 +182,13 @@ function Phonolo() {
     /**
      * A class representing a segment.
      */
-    class Phone {
+    class Segment {
 
         // Constants for use in rules
-        static NULL = new Phone("∅");
-        static C = new Phone("C");
-        static V = new Phone("V");
-        static WORD_BOUNDARY = new Phone("#");
+        static NULL = new Segment("∅");
+        static C = new Segment("C");
+        static V = new Segment("V");
+        static WORD_BOUNDARY = new Segment("#");
 
         /**
          * The symbol used to transcribe this segment.
@@ -214,7 +214,7 @@ function Phonolo() {
         name;
 
         /**
-         * Create a new Phone with the given symbol, features, and name.
+         * Create a new Segment with the given symbol, features, and name.
          * 
          * @param {string} symbol
          * @param {Object.<string, string>} features
@@ -290,7 +290,7 @@ function Phonolo() {
         /**
          * Transcription of the word.
          * 
-         * @type {Array.<(Phone|string)>}
+         * @type {Array.<(Segment|string)>}
          */
         transcription;
 
@@ -313,7 +313,7 @@ function Phonolo() {
          * Create a new Word with the given text and transcription.
          * 
          * @param {string} text
-         * @param {Array.<(Phone|string)>} transcription
+         * @param {Array.<(Segment|string)>} transcription
          * @param {Inventory} [inventory]
          */
         constructor(text, transcription, inventory) {
@@ -485,38 +485,38 @@ function Phonolo() {
         /**
          * The target of the rule.
          * 
-         * @type {(Phone|FeatureBundle)}
+         * @type {(Segment|FeatureBundle)}
          */
         target;
 
         /**
          * The result of the rule.
          * 
-         * @type {(Phone|FeatureBundle)}
+         * @type {(Segment|FeatureBundle)}
          */
         result;
 
         /**
          * The left environment of the rule.
          * 
-         * @type {Array.<(Phone|FeatureBundle)>}
+         * @type {Array.<(Segment|FeatureBundle)>}
          */
         environmentLeft;
 
         /**
          * The right environment of the rule.
          * 
-         * @type {Array.<(Phone|FeatureBundle)>}
+         * @type {Array.<(Segment|FeatureBundle)>}
          */
         environmentRight;
 
         /**
          * Create a new Rule with the given parameters.
          * 
-         * @param {(Phone|FeatureBundle)} target
-         * @param {(Phone|FeatureBundle)} result
-         * @param {Array.<(Phone|FeatureBundle)>} environmentLeft
-         * @param {Array.<(Phone|FeatureBundle)>} environmentRight
+         * @param {(Segment|FeatureBundle)} target
+         * @param {(Segment|FeatureBundle)} result
+         * @param {Array.<(Segment|FeatureBundle)>} environmentLeft
+         * @param {Array.<(Segment|FeatureBundle)>} environmentRight
          */
         constructor(target, result, environmentLeft, environmentRight) {
             this.target = target;
@@ -568,11 +568,11 @@ function Phonolo() {
     }
 
 
-    return {
+    window.Phonolo = {
         Inventory,
-        Phone,
+        Segment,
         Word,
         FeatureBundle,
         Rule
     };
-}
+})();

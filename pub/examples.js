@@ -1,7 +1,7 @@
 "use strict";
 
 // Import library
-const { Inventory, Phone, Word, FeatureBundle, Rule } = Phonolo();
+const { Inventory, Segment, Word, FeatureBundle, Rule } = window.Phonolo;
 
 // Feature system of Bruce Hayes
 // https://linguistics.ucla.edu/people/hayes/120a/Index.htm#features
@@ -88,10 +88,10 @@ const rules = [
                 "voice": "-"
             })
         ],
-        [Phone.WORD_BOUNDARY]
+        [Segment.WORD_BOUNDARY]
     ),
     new Rule(
-        Phone.NULL,
+        Segment.NULL,
         english.segments["p"],
         [
             english.segments["m"]
@@ -108,8 +108,8 @@ const rules = [
     new Rule(
         english.segments["t"],
         english.segments["ɾ"],
-        [Phone.V],
-        [Phone.V]
+        [Segment.V],
+        [Segment.V]
     )
 ];
 rules.forEach(item => {
