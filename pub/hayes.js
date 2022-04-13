@@ -4202,6 +4202,31 @@ const hayes = {
             "tense": "0"
         }
     },
+    places: [
+        "bilabial",
+        "labiodental",
+        "dental",
+        "alveolar",
+        "postalveolar",
+        "alveopalatal",
+        "retroflex",
+        "palatal",
+        "velar",
+        "uvular",
+        "pharyngeal",
+        "glottal"
+    ],
+    manners: [
+        "stop",
+        "affricate",
+        "fricative",
+        "nasal",
+        "lateral",
+        "tap",
+        "trill",
+        "approximant",
+        "glide"
+    ],
     classifyConsonant: (segment) => {
         const { features } = segment;
 
@@ -4264,13 +4289,13 @@ const hayes = {
 
         // GLIDE
         // APPROXIMANT
-        // LATERAL
-        // TAP/FLAP
         // TRILL
+        // TAP/FLAP
+        // LATERAL
         // NASAL
-        // STOP
         // FRICATIVE
         // AFFRICATE
+        // STOP
 
         let manner;
         if (features["trill"] === "+") {

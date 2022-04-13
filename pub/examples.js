@@ -1,11 +1,18 @@
 "use strict";
 
 // Import library
-const { Inventory, Segment, Word, FeatureBundle, Rule } = window.Phonolo;
+const {
+    Inventory,
+    Segment,
+    Word,
+    FeatureBundle,
+    Rule,
+    ConsonantTable
+} = window.Phonolo;
 
 // Feature system of Bruce Hayes
 // https://linguistics.ucla.edu/people/hayes/120a/Index.htm#features
-const features = Inventory.fromObject(hayes.features);
+const features = Inventory.fromObject(hayes);
 
 // Restrict to just the phonemes of English
 const english = Inventory.fromFeatureSystem(features, [
@@ -114,4 +121,16 @@ const rules = [
 ];
 rules.forEach(item => {
     rulesDiv.appendChild(item.createElement(english));
+});
+
+// Consonant table
+const consDiv = document.querySelector("#consonants");
+const tables = [
+    new ConsonantTable(
+        english.getSegments({}),
+        english
+    )
+];
+tables.forEach(item => {
+    consDiv.appendChild(item.createElement());
 });

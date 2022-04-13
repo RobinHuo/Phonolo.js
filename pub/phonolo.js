@@ -86,10 +86,11 @@
         static fromObject(obj, json = false) {
             if (json) obj = JSON.parse(obj);
             const segments = [];
-            for (const symbol in obj) {
-                segments.push(new Segment(symbol, obj[symbol]));
+            for (const symbol in obj.features) {
+                segments.push(new Segment(symbol, obj.features[symbol]));
             }
-            return new Inventory(segments);
+            const { features, ...rest } = obj;
+            return Object.assign(new Inventory(segments), rest);
         }
 
         /**
@@ -176,6 +177,14 @@
             return segments;
         }
 
+        classifyConsonant(...args) {
+            return this.featureSystem?.classifyConsonant(...args);
+        }
+        
+        classifyVowel(...args) {
+            return this.featureSystem?.classifyVowel(...args);
+        }
+
     }
 
 
@@ -242,7 +251,7 @@
 
             if (withPopup && this.features && Object.keys(this.features).length) {
                 elem.classList.add("phonolo-interact");
-                addPopup(elem, "click", this.createPopup.bind(this, inventory));
+                addPopup(elem, "click", () => this.createPopup(inventory));
             }
 
             return elem;
@@ -326,8 +335,8 @@
             this.element = document.createElement("span");
             this.element.classList.add("phonolo", "phonolo-word");
 
-            this.element.addEventListener("mouseenter", this.showTranscription.bind(this));
-            this.element.addEventListener("mouseleave", this.showText.bind(this));
+            this.element.addEventListener("mouseenter", e => this.showTranscription());
+            this.element.addEventListener("mouseleave", e => this.showText());
 
             this.showText();
         }
@@ -412,7 +421,7 @@
 
                 if (withPopup && inventory) {
                     tr.classList.add("phonolo-interact");
-                    addPopup(tr, "click", this.createPopup.bind(this, {[feat]: val}, inventory));
+                    addPopup(tr, "click", () => this.createPopup({[feat]: val}, inventory));
                 }
 
                 list.appendChild(tr);
@@ -432,7 +441,7 @@
                 if (withPopup && inventory) {
                     for (const bracket of [left, right]) {
                         bracket.classList.add("phonolo-interact");
-                        addPopup(bracket, "click", this.createPopup.bind(this, this.features, inventory));
+                        addPopup(bracket, "click", () => this.createPopup(this.features, inventory));
                         bracket.addEventListener("mouseenter", e => {
                             left.classList.add("phonolo-active");
                             right.classList.add("phonolo-active");
@@ -568,11 +577,120 @@
     }
 
 
+    /**
+     * A class representing a consonant table.
+     */
+    class ConsonantTable {
+        
+        /**
+         * The segments in the table.
+         * 
+         * @type {Array.<Segment>}
+         */
+        segments;
+
+        inventory;
+
+        constructor(segments, inventory) {
+            this.segments = segments;
+            if (inventory) this.inventory = inventory;
+        }
+
+        createElement(inventory) {
+            inventory = inventory ?? this.inventory;
+
+            const consonants = this.segments.map(segment => {
+                const classification = inventory.classifyConsonant(segment);
+                if (classification) classification.segment = segment;
+                return classification;
+            }).filter(x => x);
+
+            const placeSet = new Set(consonants.map(cons => cons.place));
+            const places = inventory.featureSystem?.places ?
+                inventory.featureSystem.places.filter(place => placeSet.has(place)) :
+                Array.from(placeSet);
+
+            const mannerSet = new Set(consonants.map(cons => cons.manner));
+            const manners = inventory.featureSystem?.manners ?
+                inventory.featureSystem.manners.filter(manner => mannerSet.has(manner)) :
+                Array.from(mannerSet);
+            
+            const voicings = Array.from(new Set(consonants.map(cons => cons.voicing))).sort();
+            
+            const table = document.createElement("table");
+            table.classList.add("phonolo");
+            table.classList.add("phonolo-consonants");
+            
+            const placeHeader = document.createElement("tr");
+            placeHeader.appendChild(document.createElement("td"));
+            places.forEach(place => {
+                const elem = document.createElement("th");
+                elem.classList.add("phonolo-consonants-place");
+                elem.scope = "col";
+                elem.innerText = place[0].toUpperCase() + place.slice(1);
+                placeHeader.appendChild(elem);
+            });
+            table.appendChild(placeHeader);
+
+            manners.forEach(manner => {
+                const row = document.createElement("tr");
+                const mannerElem = document.createElement("th");
+                mannerElem.classList.add("phonolo-consonants-manner");
+                mannerElem.scope = "row";
+                mannerElem.innerText = manner[0].toUpperCase() + manner.slice(1);
+                row.appendChild(mannerElem);
+
+                const elems = new Array(places.length);
+                const placeToCons = consonants.filter(cons => cons.manner === manner).reduce((prev, curr) => {
+                    if (!(curr.place in prev)) prev[curr.place] = [];
+                    prev[curr.place].push(curr);
+                    return prev;
+                }, {});
+                for (const place in placeToCons) {
+                    const td = document.createElement("td");
+                    const div = document.createElement("div");
+                    div.classList.add("phonolo-consonants-consonant");
+                    td.appendChild(div);
+
+                    let i = 0;
+                    placeToCons[place].sort((a, b) => a.voicing - b.voicing).forEach(cons => {
+                        // while (i < voicings.length && voicings[i] !== cons.voicing) {
+                        //     div.appendChild(document.createElement("span"));
+                        //     i++;
+                        // }
+                        div.appendChild(cons.segment.createElement(true, inventory));
+                        i++;
+                    });
+                    // while (i < voicings.length) {
+                    //     div.appendChild(document.createElement("span"));
+                    //     i++;
+                    // }
+
+                    elems[places.findIndex(p => p === place)] = td;
+                }
+                for (const elem of elems) {
+                    let td = elem;
+                    if (!td) {
+                        td = document.createElement("td");
+                        voicings.forEach(() => { td.appendChild(document.createElement("span")); });
+                    }
+                    row.appendChild(td);
+                }
+
+                table.appendChild(row);
+            });
+
+            return table;
+        }
+    }
+
+
     window.Phonolo = {
         Inventory,
         Segment,
         Word,
         FeatureBundle,
-        Rule
+        Rule,
+        ConsonantTable
     };
 })();

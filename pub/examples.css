@@ -20,7 +20,7 @@ body {
     text-align: center;
 }
 
-#features, #rules {
+#features, #rules, #consonants {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -29,6 +29,11 @@ body {
 }
 
 #rules {
+    gap: 50px;
+    flex-direction: column;
+}
+
+#consonants {
     gap: 50px;
     flex-direction: column;
 }
