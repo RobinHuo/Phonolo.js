@@ -5,7 +5,7 @@ const { Inventory, Segment, Word, FeatureBundle, Rule } = window.Phonolo;
 
 // Feature system of Bruce Hayes
 // https://linguistics.ucla.edu/people/hayes/120a/Index.htm#features
-const features = Inventory.fromObject(hayes);
+const features = Inventory.fromObject(hayes.features);
 
 // Restrict to just the phonemes of English
 const english = Inventory.fromFeatureSystem(features, [
