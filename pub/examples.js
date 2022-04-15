@@ -63,7 +63,6 @@ const bundles = [
         "approximant": "-",
         "voice": "-",
         "spread gl": "-",
-        "constr gl": "-",
         "LABIAL": "-",
         "CORONAL": "+",
         "anterior": "+",

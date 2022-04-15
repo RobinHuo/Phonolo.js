@@ -155,6 +155,7 @@ table.phonolo-consonants th {
 table.phonolo-consonants .phonolo-consonants-consonant {
     display: flex;
     justify-content: space-evenly;
+    gap: 5px;
 }
 
 .phonolo-vowels {

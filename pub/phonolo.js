@@ -103,10 +103,27 @@
          * @param {string} segments
          * @returns {Inventory}
          */
-        static fromFeatureSystem(featureSystem, segments) {
+        static fromFeatureSystem(featureSystem, segments, distinctive = true) {
+            // Find distinctive features
+            const map = new Map();
+            if (distinctive) {
+                for (const segment of segments) {
+                    for (const [feat, val] of
+                            Object.entries(featureSystem.segments[segment].features)) {
+                        if (!map.has(feat)) map.set(feat, new Set());
+                        map.get(feat).add(val);
+                    }
+                }
+            }
+
             const phonemes = [];
             for (const segment of segments) {
-                phonemes.push(new Segment(segment, featureSystem.segments[segment].features));
+                const features = {};
+                for (const [feat, val] of
+                        Object.entries(featureSystem.segments[segment].features)) {
+                    if (!distinctive || map.get(feat).size > 1) features[feat] = val;
+                }
+                phonemes.push(new Segment(segment, features));
             }
             return new Inventory(phonemes, featureSystem);
         }
@@ -137,7 +154,7 @@
         }
 
         getSegments(features) {
-            return Object.entries(features).reduce(
+            return Object.entries(features ?? {}).reduce(
                 (prev, [feat, val]) => prev.filter(x => new Set(this.features[feat][val]).has(x)),
                 Object.values(this.segments)
             );
@@ -753,7 +770,7 @@
                     g.appendChild(circ);
                 }
 
-                x = x + (vowel.rounding ? 1 : -1) * 7;
+                x += (vowel.rounding ? 1 : -1) * 7;
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 const tspan = vowel.segment.createElement(true, inventory, true);
                 text.append(tspan);
