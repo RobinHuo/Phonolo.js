@@ -20,7 +20,7 @@ body {
     text-align: center;
 }
 
-#features, #rules, #consonants {
+#features, #rules, #consonants, #vowels {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -28,12 +28,7 @@ body {
     margin: 50px;
 }
 
-#rules {
-    gap: 50px;
-    flex-direction: column;
-}
-
-#consonants {
+#rules, #consonants {
     gap: 50px;
     flex-direction: column;
 }

@@ -90,7 +90,9 @@
                 segments.push(new Segment(symbol, obj.features[symbol]));
             }
             const { features, ...rest } = obj;
-            return Object.assign(new Inventory(segments), rest);
+            const inventory = new Inventory(segments);
+            inventory.featureSystem = inventory;
+            return Object.assign(inventory, rest);
         }
 
         /**
@@ -244,10 +246,12 @@
          * @param {Inventory} [inventory]
          * @returns {HTMLElement}
          */
-        createElement(withPopup = false, inventory) {
-            const elem = document.createElement("span");
-            elem.classList.add("phonolo", "phonolo-phone");
-            elem.innerText = this.symbol;
+        createElement(withPopup = false, inventory, svg = false) {
+            const elem = svg ?
+                document.createElementNS("http://www.w3.org/2000/svg", "tspan") :
+                document.createElement("span");
+            elem.classList.add("phonolo", "phonolo-segment");
+            elem.append(document.createTextNode(this.symbol));
 
             if (withPopup && this.features && Object.keys(this.features).length) {
                 elem.classList.add("phonolo-interact");
@@ -684,6 +688,96 @@
         }
     }
 
+    class VowelChart {
+
+        static _id = 0;
+
+        segments;
+
+        inventory;
+
+        constructor(segments, inventory) {
+            this.segments = segments;
+            if (inventory) this.inventory = inventory;
+        }
+
+        createElement(inventory) {
+            inventory = inventory ?? this.inventory;
+
+            const RATIO = 0.55;
+            const HEIGHT = 80;
+            const id = VowelChart._id++;
+
+            const div = document.createElement("div");
+            div.classList.add("phonolo");
+            div.classList.add("phonolo-vowels");
+            div.innerHTML =
+                `<svg viewBox="-10 -10 120 ${HEIGHT + 20}" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <mask id="mask-${id}">
+                            <rect x="-10" y="-10" width="100%" height="100%" fill="white" />
+                        </mask>
+                    </defs>
+                    <g class="phonolo-vowels-trapezoid" mask="url(#mask-${id})" stroke="black" stroke-width="0.5">
+                        <line x1="100" y1="0" x2="0" y2="0" />
+                        <line x1="100" y1="${HEIGHT/3}" x2="${100*(1-RATIO)/3}" y2="${HEIGHT/3}" />
+                        <line x1="100" y1="${HEIGHT*2/3}" x2="${200*(1-RATIO)/3}" y2="${HEIGHT*2/3}" />
+                        <line x1="100" y1="${HEIGHT}" x2="${100*(1-RATIO)}" y2="${HEIGHT}" />
+                        <line x1="100" y1="0" x2="100" y2="${HEIGHT}" />
+                        <line x1="50" y1="0" x2="${100-100*RATIO/2}" y2="${HEIGHT}" />
+                        <line x1="0" y1="0" x2="${100-100*RATIO}" y2="${HEIGHT}" />
+                    </g>
+                </svg>`;
+            
+            const svg = div.querySelector("svg");
+            const mask = svg.querySelector("mask");
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+            const vowels = this.segments.map(segment => {
+                const classification = inventory.classifyVowel(segment);
+                if (classification) classification.segment = segment;
+                return classification;
+            }).filter(x => x);
+            
+            const circs = new Set();
+            vowels.forEach(vowel => {
+                let x = (100 - vowel.backness * 50 * (RATIO + (1-RATIO) * (3-vowel.height)/3));
+                let y = vowel.height * HEIGHT/3;
+                if (!circs.has(`${vowel.backness},${vowel.height}`)) {
+                    circs.add(`${vowel.backness},${vowel.height}`);
+
+                    const circ = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circ.setAttributeNS(null, "cx", x);
+                    circ.setAttributeNS(null, "cy", y);
+                    circ.setAttributeNS(null, "r", 2);
+                    g.appendChild(circ);
+                }
+
+                x = x + (vowel.rounding ? 1 : -1) * 7;
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                const tspan = vowel.segment.createElement(true, inventory, true);
+                text.append(tspan);
+                text.setAttributeNS(null, "x", x);
+                text.setAttributeNS(null, "y", y);
+                text.setAttributeNS(null, "dominant-baseline", "middle");
+                text.setAttributeNS(null, "text-anchor", "middle");
+                g.appendChild(text);
+
+                const clip = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                clip.setAttributeNS(null, "fill", "black");
+                clip.setAttributeNS(null, "cx", x);
+                clip.setAttributeNS(null, "cy", y);
+                clip.setAttributeNS(null, "r", 5);
+                mask.appendChild(clip);
+            });
+
+            svg.appendChild(g);
+
+            return div;
+        }
+
+    }
+
 
     window.Phonolo = {
         Inventory,
@@ -691,6 +785,7 @@
         Word,
         FeatureBundle,
         Rule,
-        ConsonantTable
+        ConsonantTable,
+        VowelChart
     };
 })();

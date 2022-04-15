@@ -7,7 +7,8 @@ const {
     Word,
     FeatureBundle,
     Rule,
-    ConsonantTable
+    ConsonantTable,
+    VowelChart
 } = window.Phonolo;
 
 // Feature system of Bruce Hayes
@@ -129,8 +130,27 @@ const tables = [
     new ConsonantTable(
         english.getSegments({}),
         english
-    )
+    ),
+    new ConsonantTable(
+        features.getSegments({}),
+        features
+    ),
 ];
 tables.forEach(item => {
     consDiv.appendChild(item.createElement());
+});
+
+const vowelsDiv = document.querySelector("#vowels");
+const vowels = [
+    new VowelChart(
+        english.getSegments({}),
+        english
+    ),
+    new VowelChart(
+        features.getSegments({}),
+        features
+    ),
+];
+vowels.forEach(item => {
+    vowelsDiv.appendChild(item.createElement());
 });

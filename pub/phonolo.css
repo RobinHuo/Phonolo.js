@@ -14,6 +14,10 @@
     border-color: var(--phonolo-active-color);
 }
 
+svg .phonolo-interact:hover {
+    fill: var(--phonolo-active-color);
+}
+
 .phonolo-popup {
     z-index: 5000 !important;
     position: fixed;
@@ -151,4 +155,12 @@ table.phonolo-consonants th {
 table.phonolo-consonants .phonolo-consonants-consonant {
     display: flex;
     justify-content: space-evenly;
+}
+
+.phonolo-vowels {
+    min-width: 250px;
+}
+
+.phonolo-vowels .phonolo-segment {
+    font-size: 0.8em;
 }
