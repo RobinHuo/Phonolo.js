@@ -98,9 +98,11 @@
         /**
          * Return an Inventory object based off featureSystem that contains
          * all the given segments, which is taken in as an array of segment symbols.
+         * If distinctive is true, only the distinctive features in segments are kept.
          * 
          * @param {Inventory} featureSystem
          * @param {string} segments
+         * @param {boolean} distinctive
          * @returns {Inventory}
          */
         static fromFeatureSystem(featureSystem, segments, distinctive = true) {
@@ -194,14 +196,6 @@
                 }
             }
             return segments;
-        }
-
-        classifyConsonant(...args) {
-            return this.featureSystem?.classifyConsonant(...args);
-        }
-        
-        classifyVowel(...args) {
-            return this.featureSystem?.classifyVowel(...args);
         }
 
     }
@@ -498,7 +492,11 @@
 
             const list = document.createElement("div");
             list.classList.add("phonolo-naturalclass-segments");
-            list.innerText = `${inventory.getSegments(features).map(p => p.symbol).join(", ")}`;
+            for (const segment of inventory.getSegments(features)) {
+                list.appendChild(segment.createElement(true, inventory));
+                list.append(", ");
+            }
+            list.lastChild.remove();
             popup.appendChild(list);
 
             return popup;
@@ -621,7 +619,7 @@
             inventory = inventory ?? this.inventory;
 
             const consonants = this.segments.map(segment => {
-                const classification = inventory.classifyConsonant(segment);
+                const classification = inventory.featureSystem.classifyConsonant(segment);
                 if (classification) classification.segment = segment;
                 return classification;
             }).filter(x => x);
@@ -751,7 +749,7 @@
             const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
             const vowels = this.segments.map(segment => {
-                const classification = inventory.classifyVowel(segment);
+                const classification = inventory.featureSystem.classifyVowel(segment);
                 if (classification) classification.segment = segment;
                 return classification;
             }).filter(x => x);
