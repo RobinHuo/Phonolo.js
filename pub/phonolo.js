@@ -250,21 +250,20 @@
 
         /**
          * Create and return a DOM element representing this segment.
-         * If withPopup is true and an inventory is provided,
+         * If an inventory is provided,
          * the created DOM element will be interactive.
          * 
-         * @param {boolean} [withPopup=false]
          * @param {Inventory} [inventory]
          * @returns {HTMLElement}
          */
-        createElement(withPopup = false, inventory, svg = false) {
+        createElement(inventory, svg = false) {
             const elem = svg ?
                 document.createElementNS("http://www.w3.org/2000/svg", "tspan") :
                 document.createElement("span");
             elem.classList.add("phonolo", "phonolo-segment");
             elem.append(document.createTextNode(this.symbol));
 
-            if (withPopup && this.features && Object.keys(this.features).length) {
+            if (inventory && this.features && Object.keys(this.features).length) {
                 elem.classList.add("phonolo-interact");
                 addPopup(elem, "click", () => this.createPopup(inventory));
             }
@@ -291,7 +290,7 @@
             `;
 
             if (this.features && Object.keys(this.features).length)
-                popup.appendChild(new FeatureBundle(this.features).createElement(true, inventory));
+                popup.appendChild(new FeatureBundle(this.features).createElement(inventory));
 
             return popup;
         }
@@ -375,7 +374,7 @@
         showTranscription() {
             this.element.replaceChildren(...this.transcription.map(phon => {
                 if (typeof phon === "string") return phon;
-                return phon.createElement(true, this.inventory);
+                return phon.createElement(this.inventory);
             }));
         }
 
@@ -405,16 +404,15 @@
 
         /**
          * Create and return a DOM element representing this feature bundle.
-         * If withPopup is true and inventory is given, the created element
+         * If an inventory is given, the created element
          * will be interactive.
          * If brackets is true (default), the bundle will be drawn with brackets.
          * 
-         * @param {boolean} [withPopup=false]
          * @param {Inventory} [inventory]
          * @param {boolean} [brackets=true]
          * @returns 
          */
-        createElement(withPopup = false, inventory, brackets = true) {
+        createElement(inventory, brackets = true) {
             const elem = document.createElement("div");
             elem.classList.add("phonolo", "phonolo-featurebundle");
 
@@ -434,7 +432,7 @@
                 featEntry.innerText = feat;
                 tr.appendChild(featEntry);
 
-                if (withPopup && inventory) {
+                if (inventory) {
                     tr.classList.add("phonolo-interact");
                     addPopup(tr, "click", () => this.createPopup({[feat]: val}, inventory));
                 }
@@ -453,7 +451,7 @@
                 list.before(left);
                 list.after(right);
 
-                if (withPopup && inventory) {
+                if (inventory) {
                     for (const bracket of [left, right]) {
                         bracket.classList.add("phonolo-interact");
                         addPopup(bracket, "click", () => this.createPopup(this.features, inventory));
@@ -493,7 +491,7 @@
             const list = document.createElement("div");
             list.classList.add("phonolo-naturalclass-segments");
             for (const segment of inventory.getSegments(features)) {
-                list.appendChild(segment.createElement(true, inventory));
+                list.appendChild(segment.createElement(inventory));
                 list.append(", ");
             }
             list.lastChild.remove();
@@ -564,14 +562,14 @@
             const elem = document.createElement("div");
             elem.classList.add("phonolo", "phonolo-rule");
             
-            elem.appendChild(this.target.createElement(true, inventory));
+            elem.appendChild(this.target.createElement(inventory));
 
             const arrow = document.createElement("div");
             arrow.classList.add("phonolo-rule-arrow");
             arrow.innerText = "→";
             elem.appendChild(arrow);
 
-            elem.appendChild(this.result.createElement(true, inventory));
+            elem.appendChild(this.result.createElement(inventory));
 
             const slash = document.createElement("div");
             slash.classList.add("phonolo-rule-slash");
@@ -579,7 +577,7 @@
             elem.appendChild(slash);
 
             this.environmentLeft?.forEach(item => {
-                elem.appendChild(item.createElement(true, inventory));
+                elem.appendChild(item.createElement(inventory));
             });
 
             const underscore = document.createElement("div");
@@ -587,7 +585,7 @@
             elem.appendChild(underscore);
 
             this.environmentRight?.forEach(item => {
-                elem.appendChild(item.createElement(true, inventory));
+                elem.appendChild(item.createElement(inventory));
             });
             
             return elem;
@@ -677,7 +675,7 @@
                         //     div.appendChild(document.createElement("span"));
                         //     i++;
                         // }
-                        div.appendChild(cons.segment.createElement(true, inventory));
+                        div.appendChild(cons.segment.createElement(inventory));
                         i++;
                     });
                     // while (i < voicings.length) {
@@ -770,7 +768,7 @@
 
                 x += (vowel.rounding ? 1 : -1) * 7;
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                const tspan = vowel.segment.createElement(true, inventory, true);
+                const tspan = vowel.segment.createElement(inventory, true);
                 text.append(tspan);
                 text.setAttributeNS(null, "x", x);
                 text.setAttributeNS(null, "y", y);

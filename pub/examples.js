@@ -73,7 +73,7 @@ const bundles = [
     }),
 ];
 bundles.forEach(item => {
-    featureBundles.appendChild(item.createElement(true, english));
+    featureBundles.appendChild(item.createElement(english));
 });
 
 // Rule example
