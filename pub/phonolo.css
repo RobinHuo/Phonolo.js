@@ -1,5 +1,5 @@
 .phonolo {
-    font-family: 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI';
+    font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI';
     box-sizing: border-box;
     --phonolo-active-color: rgb(0, 218, 218);
 }
@@ -131,15 +131,21 @@ table.phonolo-consonants {
     font-size: 1.2em;
     table-layout: fixed;
     border-collapse: collapse;
+    border: 1px solid black;
 }
 
 table.phonolo-consonants th, table.phonolo-consonants td {
     border: 1px solid black;
 }
 
+table.phonolo-consonants td {
+    background-color: #f8f9fa;
+}
+
 table.phonolo-consonants th {
-    font-weight: bold;
+    font-weight: normal;
     padding: 5px;
+    background-color: #eaecf0;
 }
 
 table.phonolo-consonants .phonolo-consonants-consonant {

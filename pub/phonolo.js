@@ -622,7 +622,7 @@
             table.classList.add("phonolo-consonants");
             
             const placeHeader = document.createElement("tr");
-            placeHeader.appendChild(document.createElement("td"));
+            placeHeader.appendChild(document.createElement("th"));
             places.forEach(place => {
                 const elem = document.createElement("th");
                 elem.classList.add("phonolo-consonants-place");
