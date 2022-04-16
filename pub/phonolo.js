@@ -449,6 +449,9 @@
                 elem.classList.add("phonolo-droppable");
             }
 
+            const list = document.createElement("table");
+            list.classList.add("phonolo-features");
+
             const createFeature = feature => {
                 const tr = document.createElement("tr");
                 tr.classList.add("phonolo-feature");
@@ -490,12 +493,19 @@
                     const shiftX = e.clientX - tr.getBoundingClientRect().left;
                     const shiftY = e.clientY - tr.getBoundingClientRect().top;
 
+                    let dragging = tr;
+                    if (!this.editable) {
+                        dragging = tr.cloneNode(true);
+                        dragging.classList.add("phonolo-drag");
+                        list.appendChild(dragging);
+                    }
+
                     let currTarget = null;                    
                     const onmousemove = e => {
                         e.preventDefault();
-                        tr.classList.add("phonolo-drag");
-                        tr.style.left = `${e.clientX - shiftX}px`;
-                        tr.style.top = `${e.clientY - shiftY}px`;
+                        dragging.classList.add("phonolo-drag");
+                        dragging.style.left = `${e.clientX - shiftX}px`;
+                        dragging.style.top = `${e.clientY - shiftY}px`;
 
                         const below = document.elementsFromPoint(e.clientX, e.clientY);
                         if (!below.length) return;
@@ -511,8 +521,8 @@
 
                     document.addEventListener("mouseup", e => {
                         document.removeEventListener("mousemove", onmousemove);
-                        if (tr.classList.contains("phonolo-drag")) {
-                            tr.classList.remove("phonolo-drag");
+                        if (dragging.classList.contains("phonolo-drag")) {
+                            dragging.classList.remove("phonolo-drag");
                             currTarget?.classList.remove("phonolo-hovering");
                             if (currTarget === elem) return;
                             if (currTarget) {
@@ -522,8 +532,10 @@
                                 } });
                                 currTarget.dispatchEvent(event);
                             }
-                            tr.remove();
-                            delete this.features[feature];
+                            dragging.remove();
+                            if (this.editable) {
+                                delete this.features[feature];
+                            }
                         }
                     }, { once: true });
                 });
@@ -531,8 +543,6 @@
                 return tr;
             };
 
-            const list = document.createElement("table");
-            list.classList.add("phonolo-features");
             for (const feature in this.features) {
                 list.appendChild(createFeature(feature));
             }
