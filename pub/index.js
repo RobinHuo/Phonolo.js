@@ -22,7 +22,7 @@ const english = Inventory.fromFeatureSystem(features, [
     "o", "ɛ",  "ə", "ʌ", "ɔ", "æ", "ɑ", "a", "ɾ"
 ]);
 
-// Just the phonemes of English
+// Some sounds of Japanese
 const japanese = Inventory.fromFeatureSystem(features, [
     "a", "i", "ɯ", "e", "o",
     "p", "b", "t", "d", "k", "ɡ", "t͡s", "t͡ɕ", "d͡ʑ", "ɸ", "s", "z", "ɕ", "ʑ",
@@ -77,4 +77,83 @@ const vowels = [
 ];
 vowels.forEach(item => {
     vowelsDiv.appendChild(item.createElement());
+});
+
+const featureBundles = document.querySelector("#features");
+const bundles = [
+    new FeatureBundle({
+        "syllabic": "+",
+        "high": "+",
+        "front": "+"
+    }, true),
+    new FeatureBundle({
+        "syllabic": "-",
+        "consonantal": "-",
+        "voice": "+"
+    }, true),
+    new FeatureBundle({
+        "syllabic": "-",
+        "consonantal": "+",
+        "sonorant": "-",
+        "continuant": "+",
+        "approximant": "-",
+        "voice": "-",
+        "spread gl": "-",
+        "LABIAL": "-",
+        "CORONAL": "+",
+        "anterior": "+",
+        "distributed": "+",
+        "strident": "-",
+        "lateral": "-",
+        "DORSAL": "-",
+    }, true),
+];
+bundles.forEach(item => {
+    featureBundles.appendChild(item.createElement(english));
+});
+
+const rulesDiv = document.querySelector("#rules");
+const rules = [
+    new Rule(
+        new FeatureBundle({
+            "syllabic": "-",
+            "continuant": "-",
+            "voice": "+"
+        }),
+        new FeatureBundle({
+            "voice": "-"
+        }),
+        [
+            new FeatureBundle({
+                "syllabic": "-",
+                "continuant": "-",
+                "voice": "-"
+            })
+        ],
+        [Segment.WORD_BOUNDARY]
+    ),
+    new Rule(
+        Segment.NULL,
+        english.segments["p"],
+        [
+            english.segments["m"]
+        ],
+        [
+            new FeatureBundle({
+                "syllabic": "-",
+                "continuant": "-",
+                "voice": "-",
+                "LABIAL": "-"
+            })
+        ]
+    ),
+    new Rule(
+        english.segments["t"],
+        english.segments["ɾ"],
+        [Segment.V],
+        [Segment.V]
+    )
+];
+rules.forEach(item => {
+    rulesDiv.appendChild(item.createElement(english));
 });

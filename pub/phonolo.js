@@ -13,15 +13,15 @@
      */
     function addPopup(element, event, getPopup) {
         element.addEventListener(event, e => {
-            const container = document.createElement("div");
-            container.classList.add("phonolo-popup");
-            container.appendChild(getPopup());
+            const popup = getPopup();
+            popup.classList.add("phonolo-popup");
+            document.body.appendChild(popup);
 
-            container.style.top = "5px";
-            container.style.right = "5px";
+            popup.style.top = "5px";
+            popup.style.right = "5px";
 
             clearPopups();
-            document.body.appendChild(container);
+            document.body.appendChild(popup);
 
             document.body.addEventListener("click", clearPopups, {capture: true});
         });

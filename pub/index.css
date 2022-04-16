@@ -102,6 +102,10 @@ body > div {
     margin-bottom: 10px;
 }
 
+.examples p {
+    line-height: 1.5;
+}
+
 .example {
     margin: 20px;
     font-size: 2rem;

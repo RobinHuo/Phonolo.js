@@ -1,9 +1,12 @@
 .phonolo {
     box-sizing: border-box;
     font-family: 'Segoe UI', 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI', sans-serif;
-    font-size: max(1em, 16px);
     --phonolo-active-color: rgb(0, 218, 218);
     --phonolo-edit-color: rgb(255, 0, 0);
+}
+
+.phonolo, .phonolo-popup {
+    font-size: max(1em, 16px);
 }
 
 .phonolo * {
@@ -132,24 +135,25 @@ svg .phonolo-interact:hover {
 }
 
 .phonolo-rule .phonolo-rule-slash {
-    font-size: 1.6em;
+    /* margin-inline: 5px; */
+    font-size: 1.4em;
 }
 
 .phonolo-rule .phonolo-rule-underscore {
-    border-bottom: 1px solid black;
+    border-bottom: 0.1em solid black;
     height: 1em;
     width: 1.4em;
 }
 
 .phonolo-naturalclass {
     width: min-content;
-    font-size: 1em;
+    /* font-size: 1em; */
 }
 
 .phonolo-naturalclass .phonolo-naturalclass-header {
     width: max-content;
     margin-bottom: 5px;
-    font-size: 1em;
+    font-size: 1.2em;
 }
 
 .phonolo-naturalclass .phonolo-naturalclass-segments {
