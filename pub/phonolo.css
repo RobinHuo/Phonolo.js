@@ -2,6 +2,7 @@
     font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI';
     box-sizing: border-box;
     --phonolo-active-color: rgb(0, 218, 218);
+    --phonolo-edit-color: rgb(255, 0, 0);
 }
 
 .phonolo * {
@@ -12,6 +13,11 @@
     cursor: pointer;
     color: var(--phonolo-active-color);
     border-color: var(--phonolo-active-color);
+}
+
+.phonolo-edit:hover {
+    cursor: pointer;
+    color: var(--phonolo-edit-color);
 }
 
 svg .phonolo-interact:hover {

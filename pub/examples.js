@@ -49,12 +49,12 @@ const bundles = [
         "syllabic": "+",
         "high": "+",
         "front": "+"
-    }),
+    }, true),
     new FeatureBundle({
         "syllabic": "-",
         "consonantal": "-",
         "voice": "+"
-    }),
+    }, true),
     new FeatureBundle({
         "syllabic": "-",
         "consonantal": "+",
@@ -70,7 +70,7 @@ const bundles = [
         "strident": "-",
         "lateral": "-",
         "DORSAL": "-",
-    }),
+    }, true),
 ];
 bundles.forEach(item => {
     featureBundles.appendChild(item.createElement(english));

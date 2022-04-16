@@ -163,6 +163,16 @@
         }
 
         /**
+         * Return the list of possible values for a feature.
+         * 
+         * @param {string} feature 
+         * @returns {Array.<string>}
+         */
+        getValues(feature) {
+            return Object.keys(this.features[feature]);
+        }
+
+        /**
          * Parse the given string as a transcription using the segments in this inventory
          * and return an array of these segments.
          * 
@@ -394,12 +404,29 @@
         features;
 
         /**
+         * Whether this feature bundle is editable.
+         * 
+         * @type {boolean}
+         */
+        editable;
+
+        /**
+         * Stores the HTMLElement for this feature bundle if editable.
+         * 
+         * @type {?HTMLElement}
+         */
+        element;
+
+        /**
          * Create a new FeatureBundle with the given features.
+         * If editable is true then the feature bundle element will be editable.
          * 
          * @param {Object.<string, string>} features 
+         * @param {boolean} [editable=false]
          */
-        constructor(features) {
+        constructor(features, editable = false) {
             this.features = features;
+            this.editable = editable;
         }
 
         /**
@@ -413,6 +440,8 @@
          * @returns 
          */
         createElement(inventory, brackets = true) {
+            if (this.element) return this.element;
+            
             const elem = document.createElement("div");
             elem.classList.add("phonolo", "phonolo-featurebundle");
 
@@ -427,6 +456,18 @@
                 valEntry.innerText = val;
                 tr.appendChild(valEntry);
 
+                if (inventory && this.editable) {
+                    valEntry.classList.add("phonolo-edit");
+                    valEntry.addEventListener("click", e => {
+                        const vals = inventory.getValues(feat);
+                        let idx = vals.findIndex(x => x === this.features[feat]);
+                        if (idx === -1) throw new Error("Invalid feature value");
+                        idx = (idx + 1) % vals.length;
+                        valEntry.innerText = vals[idx];
+                        this.features[feat] = vals[idx];
+                    });
+                }
+
                 const featEntry = document.createElement("td");
                 featEntry.classList.add("phonolo-feature-feature");
                 featEntry.innerText = feat;
@@ -434,7 +475,7 @@
 
                 if (inventory) {
                     tr.classList.add("phonolo-interact");
-                    addPopup(tr, "click", () => this.createPopup({[feat]: val}, inventory));
+                    addPopup(tr, "click", () => this.createPopup({[feat]: this.features[feat]}, inventory));
                 }
 
                 list.appendChild(tr);
@@ -466,6 +507,8 @@
                     }
                 }
             }
+
+            if (this.editable) this.element = elem;
 
             return elem;
         }
