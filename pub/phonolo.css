@@ -34,6 +34,15 @@ svg .phonolo-interact:hover {
     font-size: 1.2em;
 }
 
+.phonolo-drag {
+    position: fixed !important;
+    z-index: 9999 !important;
+    cursor: grabbing !important;
+}
+
+.phonolo-droppable.phonolo-hovering {
+    background-color: rgb(109, 255, 170);
+}
 
 .phonolo-phonegrid {
     display: grid;
@@ -71,7 +80,7 @@ svg .phonolo-interact:hover {
     justify-content: center;
     font-size: large;
     gap: 2px;
-    min-height: fit-content;
+    min-height: 20px;
 }
 
 .phonolo-features {

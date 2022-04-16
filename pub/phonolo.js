@@ -444,41 +444,97 @@
             
             const elem = document.createElement("div");
             elem.classList.add("phonolo", "phonolo-featurebundle");
+            if (this.editable) {
+                this.element = elem;
+                elem.classList.add("phonolo-droppable");
+            }
 
-            const list = document.createElement("table");
-            list.classList.add("phonolo-features");
-            for (const [feat, val] of Object.entries(this.features)) {
+            const createFeature = feature => {
                 const tr = document.createElement("tr");
                 tr.classList.add("phonolo-feature");
 
                 const valEntry = document.createElement("td");
                 valEntry.classList.add("phonolo-feature-value");
-                valEntry.innerText = val;
+                valEntry.innerText = this.features[feature];
                 tr.appendChild(valEntry);
-
+                
+                const featEntry = document.createElement("td");
+                featEntry.classList.add("phonolo-feature-feature");
+                featEntry.innerText = feature;
+                tr.appendChild(featEntry);
+                
+                // Toggle feature value on click if editable
                 if (inventory && this.editable) {
                     valEntry.classList.add("phonolo-edit");
                     valEntry.addEventListener("click", e => {
-                        const vals = inventory.getValues(feat);
-                        let idx = vals.findIndex(x => x === this.features[feat]);
+                        const vals = inventory.getValues(feature);
+                        let idx = vals.findIndex(x => x === this.features[feature]);
                         if (idx === -1) throw new Error("Invalid feature value");
                         idx = (idx + 1) % vals.length;
                         valEntry.innerText = vals[idx];
-                        this.features[feat] = vals[idx];
+                        this.features[feature] = vals[idx];
                     });
                 }
 
-                const featEntry = document.createElement("td");
-                featEntry.classList.add("phonolo-feature-feature");
-                featEntry.innerText = feat;
-                tr.appendChild(featEntry);
-
+                // Add popup on click
                 if (inventory) {
                     tr.classList.add("phonolo-interact");
-                    addPopup(tr, "click", () => this.createPopup({[feat]: this.features[feat]}, inventory));
+                    addPopup(tr, "click", () => this.createPopup({[feature]: this.features[feature]}, inventory));
                 }
 
-                list.appendChild(tr);
+                // Drag and drop features
+                tr.addEventListener("mousedown", e => {
+                    // Check if left mouse button
+                    if (e.button !== 0) return;
+
+                    const shiftX = e.clientX - tr.getBoundingClientRect().left;
+                    const shiftY = e.clientY - tr.getBoundingClientRect().top;
+
+                    let currTarget = null;                    
+                    const onmousemove = e => {
+                        e.preventDefault();
+                        tr.classList.add("phonolo-drag");
+                        tr.style.left = `${e.clientX - shiftX}px`;
+                        tr.style.top = `${e.clientY - shiftY}px`;
+
+                        const below = document.elementsFromPoint(e.clientX, e.clientY);
+                        if (!below.length) return;
+                        
+                        const newTarget = below.find(el => el.matches(".phonolo-featurebundle.phonolo-droppable"));
+                        if (currTarget !== newTarget) {
+                            currTarget?.classList.remove("phonolo-hovering");
+                            currTarget = newTarget;
+                            currTarget?.classList.add("phonolo-hovering");
+                        }
+                    };
+                    document.addEventListener("mousemove", onmousemove);
+
+                    document.addEventListener("mouseup", e => {
+                        document.removeEventListener("mousemove", onmousemove);
+                        if (tr.classList.contains("phonolo-drag")) {
+                            tr.classList.remove("phonolo-drag");
+                            currTarget?.classList.remove("phonolo-hovering");
+                            if (currTarget === elem) return;
+                            if (currTarget) {
+                                const event = new CustomEvent("featuredrop", { detail: {
+                                    feature: feature,
+                                    value: this.features[feature]
+                                } });
+                                currTarget.dispatchEvent(event);
+                            }
+                            tr.remove();
+                            delete this.features[feature];
+                        }
+                    }, { once: true });
+                });
+
+                return tr;
+            };
+
+            const list = document.createElement("table");
+            list.classList.add("phonolo-features");
+            for (const feature in this.features) {
+                list.appendChild(createFeature(feature));
             }
             elem.appendChild(list);
 
@@ -508,7 +564,18 @@
                 }
             }
 
-            if (this.editable) this.element = elem;
+            if (this.editable) {
+                elem.addEventListener("featuredrop", ({ detail : { feature, value } }) => {
+                    this.features[feature] = value;
+                    for (const tr of list.children) {
+                        if (tr.lastElementChild.innerText === feature) {
+                            tr.firstElementChild.innerText = value;
+                            return;
+                        }
+                    }
+                    list.appendChild(createFeature(feature));
+                });
+            }
 
             return elem;
         }
@@ -740,7 +807,7 @@
                     let td = elem;
                     if (!td) {
                         td = document.createElement("td");
-                        voicings.forEach(() => { td.appendChild(document.createElement("span")); });
+                        // voicings.forEach(() => { td.appendChild(document.createElement("span")); });
                     }
                     row.appendChild(td);
                 }
