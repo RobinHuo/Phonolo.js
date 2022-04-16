@@ -354,8 +354,37 @@
          */
         createPopup(inventory) {
             const popup = document.createElement("div");
-            popup.id = "phonolo-popup";
-            popup.classList.add("phonolo", "phonolo-popup");
+            popup.classList.add("phonolo");
+
+            let name = this.name;
+            if (!name) {
+                const cons = inventory.featureSystem?.classifyConsonant(this);
+                if (cons) {
+                    name = `${cons.voicing > 0 ? "voiced" : "voiceless"} ${cons.place} ${cons.manner}`;
+                }
+            }
+            if (!name) {
+                const vowel = inventory.featureSystem?.classifyVowel(this);
+                if (vowel) {
+                    name = 
+                        (vowel.rounding ? "rounded" : "unrounded") + " " +
+                        (
+                            vowel.height < 0.5 ? "high" :
+                            vowel.height === 0.5 ? "near-high" :
+                            vowel.height <  1.5 ? "close-mid" :
+                            vowel.height === 1.5 ? "mid" :
+                            vowel.height < 2.5 ? "open-mid" :
+                            "low"
+                        ) + " " +
+                        (
+                            vowel.backness < 0.5 ? "back" :
+                            vowel.backness === 0.5 ? "near-back" :
+                            vowel.backness < 1.5 ? "central" :
+                            vowel.backness === 1.5 ? "near-front" :
+                            "front"
+                        ) + " vowel";
+                }
+            }
 
             popup.innerHTML = `
                 <div class="phonolo-phonegrid">
@@ -363,9 +392,7 @@
                         ${this.symbol}
                     </div>
                     <div class="phonolo-name">
-                        ${this.name ?? ""}
-                    </div>
-                    <div class="phonolo-allophones">
+                        ${name ?? ""}
                     </div>
                 </div>
             `;
@@ -1014,7 +1041,7 @@
             div.classList.add("phonolo");
             div.classList.add("phonolo-vowels");
             div.innerHTML =
-                `<svg viewBox="-10 -10 120 ${HEIGHT + 20}" xmlns="http://www.w3.org/2000/svg">
+                `<svg viewBox="-15 -15 130 ${HEIGHT + 30}" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <mask id="mask-${id}">
                             <rect x="-10" y="-10" width="100%" height="100%" fill="white" />

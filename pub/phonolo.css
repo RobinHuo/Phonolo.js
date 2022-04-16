@@ -1,5 +1,5 @@
 .phonolo {
-    font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI';
+    font-family: 'Segoe UI', 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI', sans-serif;
     box-sizing: border-box;
     --phonolo-active-color: rgb(0, 218, 218);
     --phonolo-edit-color: rgb(255, 0, 0);
@@ -44,14 +44,17 @@ svg .phonolo-interact:hover {
     background-color: rgb(109, 255, 170);
 }
 
+/* .phonolo-segment {
+    font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI', sans-serif;
+} */
+
 .phonolo-phonegrid {
     display: grid;
     grid-template-columns: max-content 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr;
     grid-template-areas:
-        "symbol name"
-        "symbol phones";
-    column-gap: 5px;
+        "symbol name";
+    column-gap: 10px;
     margin-bottom: 10px;
 }
 
@@ -60,20 +63,17 @@ svg .phonolo-interact:hover {
     height: 50px;
     width: 50px;
     display: flex;
-    font-size: 30px;
+    font-size: 40px;
     align-items: center;
     justify-content: center;
+    place-self: center;
 }
 
 .phonolo-phonegrid .phonolo-name {
     grid-area: name;
-    font-size: larger;
+    font-size: smaller;
+    width: min-content;
 }
-
-.phonolo-phonegrid .phonolo-allophones {
-    grid-area: phones;
-}
-
 
 .phonolo-featurebundle {
     display: flex;
