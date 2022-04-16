@@ -24,7 +24,7 @@ const english = Inventory.fromFeatureSystem(features, [
 
 // Some sounds of Japanese
 const japanese = Inventory.fromFeatureSystem(features, [
-    "a", "i", "ɯ", "e", "o",
+    "a", "i", "u", "e", "o",
     "p", "b", "t", "d", "k", "ɡ", "t͡s", "t͡ɕ", "d͡ʑ", "ɸ", "s", "z", "ɕ", "ʑ",
     "ç", "h", "m", "n", "ɲ", "ɴ", "ɾ", "w", "j"
 ]);
@@ -85,12 +85,12 @@ const bundles = [
         "syllabic": "+",
         "high": "+",
         "front": "+"
-    }, true),
+    }),
     new FeatureBundle({
         "syllabic": "-",
         "consonantal": "-",
         "voice": "+"
-    }, true),
+    }),
     new FeatureBundle({
         "syllabic": "-",
         "consonantal": "+",
@@ -106,7 +106,7 @@ const bundles = [
         "strident": "-",
         "lateral": "-",
         "DORSAL": "-",
-    }, true),
+    }),
 ];
 bundles.forEach(item => {
     featureBundles.appendChild(item.createElement(english));
@@ -157,3 +157,54 @@ const rules = [
 rules.forEach(item => {
     rulesDiv.appendChild(item.createElement(english));
 });
+
+const editDiv = document.querySelector("#editable");
+const editable = [
+    new FeatureBundle({
+        "syllabic": "-",
+        "consonantal": "+",
+        "sonorant": "-",
+        "continuant": "+",
+        "approximant": "-",
+        "voice": "-",
+        "spread gl": "-",
+        "LABIAL": "-",
+        "CORONAL": "+",
+        "anterior": "+",
+        "distributed": "+",
+        "strident": "-",
+        "lateral": "-",
+        "DORSAL": "-",
+    }, true),
+    new FeatureBundle({
+        "syllabic": "+",
+        "consonantal": "-",
+        "DORSAL": "+",
+        "high": "-",
+        "low": "-",
+        "front": "-",
+        "back": "-",
+        "tense": "-"
+    }, true),
+    new Rule(
+        new FeatureBundle({
+            "syllabic": "-",
+            "continuant": "-",
+            "voice": "+"
+        }, true),
+        new FeatureBundle({
+            "voice": "-"
+        }, true),
+        [
+            new FeatureBundle({
+                "syllabic": "-",
+                "continuant": "-",
+                "voice": "-"
+            }, true)
+        ],
+        [Segment.WORD_BOUNDARY]
+    ),
+];
+for (const elem of editable) {
+    editDiv.appendChild(elem.createElement(english));
+}

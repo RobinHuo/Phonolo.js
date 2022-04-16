@@ -13,6 +13,10 @@ html {
     margin: 0;
 }
 
+.phonolo-popup {
+    font-size: 2em !important;
+}
+
 
 p {
     font-weight: 400;
@@ -87,7 +91,7 @@ body > div {
 }
 
 .examples > div {
-    margin-bottom: 30px;
+    margin-bottom: 50px;
 }
 
 .examples h2 {
