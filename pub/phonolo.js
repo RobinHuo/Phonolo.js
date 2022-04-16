@@ -667,14 +667,14 @@
         /**
          * Create a new Rule with the given parameters.
          * 
-         * @param {(Segment|FeatureBundle)} target
-         * @param {(Segment|FeatureBundle)} result
-         * @param {Array.<(Segment|FeatureBundle)>} environmentLeft
-         * @param {Array.<(Segment|FeatureBundle)>} environmentRight
+         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} target
+         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} result
+         * @param {Array.<(Segment|FeatureBundle)>} [environmentLeft]
+         * @param {Array.<(Segment|FeatureBundle)>} [environmentRight]
          */
-        constructor(target, result, environmentLeft, environmentRight) {
-            this.target = target;
-            this.result = result;
+        constructor(target, result, environmentLeft = [], environmentRight = []) {
+            this.target = Array.isArray(target) ? target : [target];
+            this.result = Array.isArray(result) ? result : [result];
             this.environmentLeft = environmentLeft;
             this.environmentRight = environmentRight;
         }
@@ -690,31 +690,37 @@
             const elem = document.createElement("div");
             elem.classList.add("phonolo", "phonolo-rule");
             
-            elem.appendChild(this.target.createElement(inventory));
+            this.target.forEach(item => {
+                elem.appendChild(item.createElement(inventory));
+            });
 
             const arrow = document.createElement("div");
             arrow.classList.add("phonolo-rule-arrow");
             arrow.innerText = "→";
             elem.appendChild(arrow);
 
-            elem.appendChild(this.result.createElement(inventory));
-
-            const slash = document.createElement("div");
-            slash.classList.add("phonolo-rule-slash");
-            slash.innerText = "/";
-            elem.appendChild(slash);
-
-            this.environmentLeft?.forEach(item => {
+            this.result.forEach(item => {
                 elem.appendChild(item.createElement(inventory));
             });
 
-            const underscore = document.createElement("div");
-            underscore.classList.add("phonolo-rule-underscore");
-            elem.appendChild(underscore);
+            if (this.environmentLeft?.length || this.environmentRight?.length) {
+                const slash = document.createElement("div");
+                slash.classList.add("phonolo-rule-slash");
+                slash.innerText = "/";
+                elem.appendChild(slash);
 
-            this.environmentRight?.forEach(item => {
-                elem.appendChild(item.createElement(inventory));
-            });
+                this.environmentLeft?.forEach(item => {
+                    elem.appendChild(item.createElement(inventory));
+                });
+
+                const underscore = document.createElement("div");
+                underscore.classList.add("phonolo-rule-underscore");
+                elem.appendChild(underscore);
+
+                this.environmentRight?.forEach(item => {
+                    elem.appendChild(item.createElement(inventory));
+                });
+            }
             
             return elem;
         }
@@ -814,12 +820,7 @@
                     elems[places.findIndex(p => p === place)] = td;
                 }
                 for (const elem of elems) {
-                    let td = elem;
-                    if (!td) {
-                        td = document.createElement("td");
-                        // voicings.forEach(() => { td.appendChild(document.createElement("span")); });
-                    }
-                    row.appendChild(td);
+                    row.appendChild(elem ?? document.createElement("td"));
                 }
 
                 table.appendChild(row);

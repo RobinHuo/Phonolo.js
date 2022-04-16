@@ -28,6 +28,10 @@ body {
     margin: 50px;
 }
 
+#features, #vowels {
+    gap: 30px;
+}
+
 #rules, #consonants {
     gap: 50px;
     flex-direction: column;
