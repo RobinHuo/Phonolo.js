@@ -1,5 +1,5 @@
 // https://linguistics.ucla.edu/people/hayes/120a/Index.htm#features
-const hayes = {
+window.hayes = {
     features: {
         "ɒ": {
             "syllabic": "+",

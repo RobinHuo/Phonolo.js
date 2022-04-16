@@ -1,8 +1,10 @@
 {
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "jsdoc": "^3.6.10"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "jsdoc README.md pub/phonolo.js"
   }
 }

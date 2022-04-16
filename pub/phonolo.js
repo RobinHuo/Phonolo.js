@@ -865,6 +865,7 @@
 
         /**
          * Create and return a new DOM element for this ConsonantTable.
+         * Non-consonants are ignored.
          * If no inventory was provided for this ConsonantTable,
          * an inventory must be provided here.
          * 
@@ -996,6 +997,7 @@
 
         /**
          * Create and return a new DOM element for this VowelChart.
+         * Non-vowels are ignored.
          * If no inventory was provided for this VowelChart, an inventory must be provided.
          * 
          * @param {Inventory} [inventory] - Inventory to use for classifying vowels.

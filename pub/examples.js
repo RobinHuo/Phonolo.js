@@ -9,7 +9,7 @@ const {
     Rule,
     ConsonantTable,
     VowelChart
-} = window.Phonolo;
+} = Phonolo;
 
 // Feature system of Bruce Hayes
 // https://linguistics.ucla.edu/people/hayes/120a/Index.htm#features
@@ -127,11 +127,11 @@ rules.forEach(item => {
 const consDiv = document.querySelector("#consonants");
 const tables = [
     new ConsonantTable(
-        english.getSegments({}),
+        english.getSegments(),
         english
     ),
     new ConsonantTable(
-        features.getSegments({}),
+        features.getSegments(),
         features
     ),
 ];
@@ -142,11 +142,11 @@ tables.forEach(item => {
 const vowelsDiv = document.querySelector("#vowels");
 const vowels = [
     new VowelChart(
-        english.getSegments({}),
+        english.getSegments(),
         english
     ),
     new VowelChart(
-        features.getSegments({}),
+        features.getSegments(),
         features
     ),
 ];
