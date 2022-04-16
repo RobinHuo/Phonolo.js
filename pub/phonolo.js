@@ -525,20 +525,28 @@
                 innerText = "these features";
             }
 
-            popup.innerHTML = `
-                <div class="phonolo-naturalclass-header">
-                    Segments with ${innerText}:
-                </div>
-            `
+            const segments = inventory.getSegments(features);
 
-            const list = document.createElement("div");
-            list.classList.add("phonolo-naturalclass-segments");
-            for (const segment of inventory.getSegments(features)) {
-                list.appendChild(segment.createElement(inventory));
-                list.append(", ");
+            if (segments.length) {
+                popup.innerHTML =
+                    `<div class="phonolo-naturalclass-header">
+                        Segments with ${innerText}:
+                    </div>`;
+
+                const list = document.createElement("div");
+                list.classList.add("phonolo-naturalclass-segments");
+                for (const segment of segments) {
+                    list.appendChild(segment.createElement(inventory));
+                    list.append(", ");
+                }
+                list.lastChild.remove();
+                popup.appendChild(list);
+            } else {
+                popup.innerHTML = 
+                    `<div class="phonolo-naturalclass-header">
+                        No segments with ${innerText}.
+                    </div>`;
             }
-            list.lastChild.remove();
-            popup.appendChild(list);
 
             return popup;
         }
