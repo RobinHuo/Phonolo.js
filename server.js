@@ -5,9 +5,9 @@ const express = require("express");
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "/pub")));
+app.use("/docs", express.static(path.join(__dirname, "/out")));
 
-app.use("/doc", express.static(path.join(__dirname, "/out")));
+app.use(express.static(path.join(__dirname, "/pub")));
 
 app.get("/", (req, res) => {
     res.redirect("/examples.html");

@@ -1,5 +1,8 @@
 # Phonolo.js
 
+Deployed webpage at https://shrouded-depths-86154.herokuapp.com/.
+Docs at https://shrouded-depths-86154.herokuapp.com/docs/.
+
 ## Getting Started
 To use Phonolo.js, include `phonolo.js` and `phonolo.css` in your HTML file:
 ```
