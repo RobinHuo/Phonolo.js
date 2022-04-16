@@ -1,13 +1,14 @@
 # Phonolo.js
 
-Deployed webpage at https://shrouded-depths-86154.herokuapp.com/.
-Docs at https://shrouded-depths-86154.herokuapp.com/docs/.
+Deployed webpage at [https://shrouded-depths-86154.herokuapp.com/](https://shrouded-depths-86154.herokuapp.com/).
+
+Docs at [https://shrouded-depths-86154.herokuapp.com/docs/](https://shrouded-depths-86154.herokuapp.com/docs/).
 
 ## Getting Started
 To use Phonolo.js, include `phonolo.js` and `phonolo.css` in your HTML file:
 ```
-<link rel="stylesheet" href="/path/to/phonolo.css">
-<script src="/path/to/phonolo.js" defer></script>
+<link rel="stylesheet" href="path/to/phonolo.css">
+<script src="path/to/phonolo.js"></script>
 ```
 The API classes will be exposed via the global `Phonolo` object:
 ```
@@ -26,7 +27,7 @@ Most of the features in Phonolo.js require you to specify a phonological feature
 A feature system based on that of the UCLA phonologist
 [Bruce Hayes](https://linguistics.ucla.edu/people/hayes/120a/Index.htm#features)
 is provided here as `hayes.js`.
-To use it, include `hayes.js` in your HTML: `<script src="/path/to/hayes.js" defer></script>`.
+To use it, include `hayes.js` in your HTML: `<script src="path/to/hayes.js"></script>`.
 Then you can instantiate the feature system using:
 ```
 const featureSystem = Phonolo.Inventory.fromObject(hayes);

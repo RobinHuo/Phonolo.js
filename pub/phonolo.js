@@ -13,14 +13,15 @@
      */
     function addPopup(element, event, getPopup) {
         element.addEventListener(event, e => {
-            const popup = getPopup();
-            popup.classList.add("phonolo-popup");
+            const container = document.createElement("div");
+            container.classList.add("phonolo-popup");
+            container.appendChild(getPopup());
 
-            popup.style.top = "5px";
-            popup.style.right = "5px";
+            container.style.top = "5px";
+            container.style.right = "5px";
 
             clearPopups();
-            document.body.appendChild(popup);
+            document.body.appendChild(container);
 
             document.body.addEventListener("click", clearPopups, {capture: true});
         });
@@ -722,7 +723,7 @@
          */
         createPopup(features, inventory) {
             const popup = document.createElement("div");
-            popup.classList.add("phonolo", "phonolo-popup", "phonolo-naturalclass");
+            popup.classList.add("phonolo", "phonolo-naturalclass");
 
             const entries = Object.entries(features);
             let innerText;
@@ -1082,7 +1083,7 @@
                     g.appendChild(circ);
                 }
 
-                x += (vowel.rounding ? 1 : -1) * 7;
+                x += (vowel.rounding ? 1 : -1) * 8;
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 const tspan = vowel.segment.createElement(inventory, true);
                 text.append(tspan);

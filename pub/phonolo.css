@@ -1,6 +1,7 @@
 .phonolo {
-    font-family: 'Segoe UI', 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI', sans-serif;
     box-sizing: border-box;
+    font-family: 'Segoe UI', 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI', sans-serif;
+    font-size: max(1em, 16px);
     --phonolo-active-color: rgb(0, 218, 218);
     --phonolo-edit-color: rgb(255, 0, 0);
 }
@@ -26,12 +27,13 @@ svg .phonolo-interact:hover {
 
 .phonolo-popup {
     z-index: 5000 !important;
-    position: fixed;
-    border: 1px solid black;
-    background-color: white;
-    padding: 10px;
+    position: fixed !important;
+    border: 1px solid black !important;
+    background-color: white !important;
+    padding: 10px !important;
 
-    font-size: 1.2em;
+    max-height: max-content !important;
+    min-height: unset !important;
 }
 
 .phonolo-drag {
@@ -44,9 +46,10 @@ svg .phonolo-interact:hover {
     background-color: rgb(109, 255, 170);
 }
 
-/* .phonolo-segment {
-    font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI', sans-serif;
-} */
+.phonolo-segment {
+    /* font-family: 'Doulos SIL', 'Times New Roman', 'Arial', 'Courier New', 'Segoe UI', sans-serif; */
+    font-size: 1em;
+}
 
 .phonolo-phonegrid {
     display: grid;
@@ -63,7 +66,7 @@ svg .phonolo-interact:hover {
     height: 50px;
     width: 50px;
     display: flex;
-    font-size: 40px;
+    font-size: 2.4em;
     align-items: center;
     justify-content: center;
     place-self: center;
@@ -71,14 +74,14 @@ svg .phonolo-interact:hover {
 
 .phonolo-phonegrid .phonolo-name {
     grid-area: name;
-    font-size: smaller;
+    font-size: 1em;
     width: min-content;
 }
 
 .phonolo-featurebundle {
     display: flex;
     justify-content: center;
-    font-size: large;
+    font-size: 1em;
     gap: 2px;
     min-height: 20px;
 }
@@ -117,15 +120,19 @@ svg .phonolo-interact:hover {
 
     gap: 5px;
 
-    font-size: 1.2em;
+    font-size: 1em;
+}
+
+.phonolo-rule .phonolo-segment {
+    font-size: 1em;
 }
 
 .phonolo-rule .phonolo-rule-arrow {
-    font-size: 1.4em;
+    font-size: 1.6em;
 }
 
 .phonolo-rule .phonolo-rule-slash {
-    font-size: 1.4em;
+    font-size: 1.6em;
 }
 
 .phonolo-rule .phonolo-rule-underscore {
@@ -136,10 +143,13 @@ svg .phonolo-interact:hover {
 
 .phonolo-naturalclass {
     width: min-content;
+    font-size: 1em;
 }
 
 .phonolo-naturalclass .phonolo-naturalclass-header {
     width: max-content;
+    margin-bottom: 5px;
+    font-size: 1em;
 }
 
 .phonolo-naturalclass .phonolo-naturalclass-segments {
@@ -147,7 +157,7 @@ svg .phonolo-interact:hover {
 }
 
 table.phonolo-consonants {
-    font-size: 1.2em;
+    font-size: 1em;
     table-layout: fixed;
     border-collapse: collapse;
     border: 1px solid black;
@@ -178,5 +188,5 @@ table.phonolo-consonants .phonolo-consonants-consonant {
 }
 
 .phonolo-vowels .phonolo-segment {
-    font-size: 0.8em;
+    font-size: 0.75em;
 }

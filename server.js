@@ -9,9 +9,6 @@ app.use("/docs", express.static(path.join(__dirname, "/out")));
 
 app.use(express.static(path.join(__dirname, "/pub")));
 
-app.get("/", (req, res) => {
-    res.redirect("/examples.html");
-});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

@@ -4208,7 +4208,7 @@ window.hayes = {
         "dental",
         "alveolar",
         "postalveolar",
-        "alveopalatal",
+        "alveolopalatal",
         "retroflex",
         "palatal",
         "velar",

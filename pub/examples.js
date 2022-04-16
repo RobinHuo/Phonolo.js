@@ -20,7 +20,7 @@ const english = Inventory.fromFeatureSystem(features, [
     "p", "t", "k", "b", "d", "ɡ", "t͡ʃ", "d͡ʒ", "f", "θ", "s", "ʃ", "h", "v",
     "ð", "z", "ʒ", "m", "n", "ŋ", "ɹ", "j", "l", "w", "i", "u", "ɪ", "ʊ", "e",
     "o", "ɛ",  "ə", "ʌ", "ɔ", "æ", "ɑ", "a", "ɾ"
-]); 
+]);
 
 // Transcription example
 const transcription = document.querySelector("#transcription");

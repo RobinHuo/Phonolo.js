@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Phonolo.js</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,500&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./index.css">
+        <link rel="stylesheet" href="./phonolo.css">
+        <script src="./phonolo.js" defer></script>
+        <script src="./hayes.js" defer></script>
+        <script src="./index.js" defer></script>
+    </head>
+    <body>
+        <div class="title-page">
+            <h1 class="title">Phonolo.js</h1>
+            <h2 class="subtitle">Easy interactive diagrams for feature-based phonology</h2>
+            <div class="button-container">
+                <a class="button" href="#examples">Examples</a>
+                <a class="button" href="docs">Documentation</a>
+            </div>
+        </div>
+        <!-- <hr> -->
+        <div id="examples">
+            <div class="examples">
+                <h1>Examples</h1>
+                <div>
+                    <h2>
+                        Interactive Transcriptions:
+                    </h2>
+                    <h3>
+                        Easily add an interactive transcription to a string of text.
+                    </h3>
+                    <p>
+                        Hover over a word to reveal its transcription and view segmental info.
+                        Perfect for unobtrusively augmenting foreign-language texts or linguistic data.
+                    </p>
+                    <div id="transcription" class="example"></div>
+                </div>
+                <div>
+                    <h2>Consonant Tables:</h2>
+                    <h3>
+                        Make pretty consonant tables just by specifying the segments.
+                    </h3>
+                    <p>
+                        Click on a consonant to see its name and features.
+                    </p>
+                    <div id="consonants" class="example flex col"></div>
+                </div>
+                <div>
+                    <h2>Vowel Charts:</h2>
+                    <h3>
+                        Make vowel diagrams just by specifying the segments.
+                    </h3>
+                    <p>
+                        Click on a vowel to see its name and features.
+                    </p>
+                    <div id="vowels" class="example flex"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
