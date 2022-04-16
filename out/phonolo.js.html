@@ -1,4 +1,32 @@
-(function () {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: phonolo.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: phonolo.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>(function () {
     "use strict";
 
     /**
@@ -47,7 +75,7 @@
          * A dictionary of the segments in the inventory.
          * Maps segment symbol to Segment objects.
          * 
-         * @type {Object.<string, Segment>}
+         * @type {Object.&lt;string, Segment>}
          */
         segments = {};
 
@@ -59,7 +87,7 @@
          * in this Inventory that have the corresponding value
          * for the corresponding feature.
          * 
-         * @type {Object.<string, Object.<string, Array.<Segment>>>}
+         * @type {Object.&lt;string, Object.&lt;string, Array.&lt;Segment>>>}
          */
         features = {};
 
@@ -82,7 +110,7 @@
          * The returned Inventory object is its own feature system.
          * 
          * @param {(Object|string)} obj - The object to parse from.
-         * @param {Object.<string, Object.<string, string>>} obj.features - Segments and their feature specifications.
+         * @param {Object.&lt;string, Object.&lt;string, string>>} obj.features - Segments and their feature specifications.
          * @param {function} [obj.classifyConsonant] - 
          *     Function that takes a Segment and returns a consonant classification:
          *     { place: string, manner: string, voicing: number }.
@@ -95,9 +123,9 @@
          *     height is a number between 0.0 and 3.0 where 0.0 is high and 3.0 is low,
          *     backness is a number between 0.0 and 2.0 where 0.0 is back and 2.0 is front, and
          *     rounding is a boolean that is true iff the vowel is rounded.
-         * @param {Array.<string>} [obj.places] - 
+         * @param {Array.&lt;string>} [obj.places] - 
          *     An array of the places of articulation that this feature system classifies, in order.
-         * @param {Array.<string>} [obj.manners] - 
+         * @param {Array.&lt;string>} [obj.manners] - 
          *     An array of the manners of articulation that this feature system classifies, in order.
          * @returns {Inventory} An Inventory object parsed from obj.
          */
@@ -151,7 +179,7 @@
          * Create a new Inventory with the given segments
          * and optionally based off the given feature system.
          * 
-         * @param {Array.<Segment>} segments
+         * @param {Array.&lt;Segment>} segments
          * @param {Inventory} [featureSystem]
          */
         constructor(segments, featureSystem) {
@@ -184,8 +212,8 @@
          * { feat1: val1, feat2: val2, ... }.
          * If no feature specification is given, return all Segments in this Inventory.
          * 
-         * @param {Object.<string, string>} [features] - A feature specification.
-         * @returns {Array.<Segment>} The Segments in this Inventory matching the given features.
+         * @param {Object.&lt;string, string>} [features] - A feature specification.
+         * @returns {Array.&lt;Segment>} The Segments in this Inventory matching the given features.
          */
         getSegments(features) {
             return Object.entries(features ?? {}).reduce(
@@ -198,7 +226,7 @@
          * Return the list of possible values for a feature.
          * 
          * @param {string} feature - The feature to find the possible values for.
-         * @returns {Array.<string>} The possible values in this Inventory for feature.
+         * @returns {Array.&lt;string>} The possible values in this Inventory for feature.
          */
         getValues(feature) {
             return Object.keys(this.features[feature]);
@@ -210,7 +238,7 @@
          * 
          * @throws Throws an error if the text cannot be fully parsed.
          * @param {string} text - A string comprised of symbols of Segments in this Inventory.
-         * @returns {Array.<Segment>} Array of Segments from this Inventory corresponding to text.
+         * @returns {Array.&lt;Segment>} Array of Segments from this Inventory corresponding to text.
          */
         parse(text) {
             // Replacement pattern to escape all special regex symbols
@@ -222,14 +250,14 @@
                 Object.keys(this.segments)
                     .sort()
                     .reverse()
-                    .map(s => s.normalize().replace(escape, "\\$&"))
+                    .map(s => s.normalize().replace(escape, "\\$&amp;"))
                     .join("|")
                 })(\\s*)`, "uy"
             );
 
             const segments = [];
             let result;
-            while (segmentRegex.lastIndex < text.length) {
+            while (segmentRegex.lastIndex &lt; text.length) {
                 result = segmentRegex.exec(text);
                 if (result) {
                     segments.push(this.segments[result[1]]);
@@ -295,7 +323,7 @@
          * The feature specification for this segment.
          * Keys are feature names and values are feature values.
          * 
-         * @type {Object.<string, string>}
+         * @type {Object.&lt;string, string>}
          */
         features = {};
 
@@ -313,7 +341,7 @@
          * { feat1: val1, feat2: val2, ... }
          * 
          * @param {string} symbol - The symbol used to transcribe this segment.
-         * @param {Object.<string, string>} features - The feature specification for this segment.
+         * @param {Object.&lt;string, string>} features - The feature specification for this segment.
          * @param {string} [name] - The name of this segment.
          */
         constructor(symbol, features, name) {
@@ -337,7 +365,7 @@
             elem.classList.add("phonolo", "phonolo-segment");
             elem.append(document.createTextNode(this.symbol));
 
-            if (inventory && this.features && Object.keys(this.features).length) {
+            if (inventory &amp;&amp; this.features &amp;&amp; Object.keys(this.features).length) {
                 elem.classList.add("phonolo-interact");
                 addPopup(elem, "click", () => this.createPopup(inventory));
             }
@@ -358,19 +386,19 @@
             popup.classList.add("phonolo", "phonolo-popup");
 
             popup.innerHTML = `
-                <div class="phonolo-phonegrid">
-                    <div class="phonolo-symbol">
+                &lt;div class="phonolo-phonegrid">
+                    &lt;div class="phonolo-symbol">
                         ${this.symbol}
-                    </div>
-                    <div class="phonolo-name">
+                    &lt;/div>
+                    &lt;div class="phonolo-name">
                         ${this.name ?? ""}
-                    </div>
-                    <div class="phonolo-allophones">
-                    </div>
-                </div>
+                    &lt;/div>
+                    &lt;div class="phonolo-allophones">
+                    &lt;/div>
+                &lt;/div>
             `;
 
-            if (this.features && Object.keys(this.features).length)
+            if (this.features &amp;&amp; Object.keys(this.features).length)
                 popup.appendChild(new FeatureBundle(this.features).createElement(inventory));
 
             return popup;
@@ -394,7 +422,7 @@
         /**
          * Transcription of the word as an array of Segments.
          * 
-         * @type {Array.<(Segment|string)>}
+         * @type {Array.&lt;(Segment|string)>}
          */
         transcription;
 
@@ -418,7 +446,7 @@
          * Create a new Word with the given text and transcription.
          * 
          * @param {string} text - The original text of the word.
-         * @param {Array.<(Segment|string)>} transcription - Transcription of the word as an array of Segments.
+         * @param {Array.&lt;(Segment|string)>} transcription - Transcription of the word as an array of Segments.
          * @param {Inventory} [inventory] - Inventory that the segments come from.
          */
         constructor(text, transcription, inventory) {
@@ -487,7 +515,7 @@
         /**
          * Feature specification for this feature bundle.
          * 
-         * @type {Object.<string, string>}
+         * @type {Object.&lt;string, string>}
          */
         features;
 
@@ -510,7 +538,7 @@
          * Create a new FeatureBundle with the given features.
          * If editable is true then the feature bundle element will be editable.
          * 
-         * @param {Object.<string, string>} features - Feature specification for the bundle.
+         * @param {Object.&lt;string, string>} features - Feature specification for the bundle.
          * @param {boolean} [editable=false] - True iff the FeatureBundle is to be user-editable.
          */
         constructor(features, editable = false) {
@@ -559,7 +587,7 @@
                 tr.appendChild(featEntry);
                 
                 // Toggle feature value on click if editable
-                if (inventory && this.editable) {
+                if (inventory &amp;&amp; this.editable) {
                     valEntry.classList.add("phonolo-edit");
                     valEntry.addEventListener("click", e => {
                         const vals = inventory.getValues(feature);
@@ -688,7 +716,7 @@
         /**
          * Create and return a popup element for this FeatureBundle.
          * 
-         * @param {Object.<string, string>} features - Feature specification for the popup.
+         * @param {Object.&lt;string, string>} features - Feature specification for the popup.
          * @param {Inventory} inventory - Inventory to use for the popup info.
          * @returns {HTMLElement} - A popup element.
          * @private
@@ -709,9 +737,9 @@
 
             if (segments.length) {
                 popup.innerHTML =
-                    `<div class="phonolo-naturalclass-header">
+                    `&lt;div class="phonolo-naturalclass-header">
                         Segments with ${innerText}:
-                    </div>`;
+                    &lt;/div>`;
 
                 const list = document.createElement("div");
                 list.classList.add("phonolo-naturalclass-segments");
@@ -723,9 +751,9 @@
                 popup.appendChild(list);
             } else {
                 popup.innerHTML = 
-                    `<div class="phonolo-naturalclass-header">
+                    `&lt;div class="phonolo-naturalclass-header">
                         No segments with ${innerText}.
-                    </div>`;
+                    &lt;/div>`;
             }
 
             return popup;
@@ -756,24 +784,24 @@
         /**
          * The left environment of the rule.
          * 
-         * @type {Array.<(Segment|FeatureBundle)>}
+         * @type {Array.&lt;(Segment|FeatureBundle)>}
          */
         environmentLeft;
 
         /**
          * The right environment of the rule.
          * 
-         * @type {Array.<(Segment|FeatureBundle)>}
+         * @type {Array.&lt;(Segment|FeatureBundle)>}
          */
         environmentRight;
 
         /**
          * Create a new Rule with the given target, result, and optionally environment.
          * 
-         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} target
-         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} result
-         * @param {Array.<(Segment|FeatureBundle)>} [environmentLeft=[]]
-         * @param {Array.<(Segment|FeatureBundle)>} [environmentRight=[]]
+         * @param {(Array.&lt;(Segment|FeatureBundle)>|(Segment|FeatureBundle))} target
+         * @param {(Array.&lt;(Segment|FeatureBundle)>|(Segment|FeatureBundle))} result
+         * @param {Array.&lt;(Segment|FeatureBundle)>} [environmentLeft=[]]
+         * @param {Array.&lt;(Segment|FeatureBundle)>} [environmentRight=[]]
          */
         constructor(target, result, environmentLeft = [], environmentRight = []) {
             this.target = Array.isArray(target) ? target : [target];
@@ -840,7 +868,7 @@
         /**
          * The Segments in the table.
          * 
-         * @type {Array.<Segment>}
+         * @type {Array.&lt;Segment>}
          */
         segments;
 
@@ -855,7 +883,7 @@
         /**
          * Create a new consonant table from the given segments.
          * 
-         * @param {Array.<Segment>} segments - The Segments in the table.
+         * @param {Array.&lt;Segment>} segments - The Segments in the table.
          * @param {Inventory} [inventory] - Inventory that the Segments come from.
          */
         constructor(segments, inventory) {
@@ -929,14 +957,14 @@
 
                     let i = 0;
                     placeToCons[place].sort((a, b) => a.voicing - b.voicing).forEach(cons => {
-                        // while (i < voicings.length && voicings[i] !== cons.voicing) {
+                        // while (i &lt; voicings.length &amp;&amp; voicings[i] !== cons.voicing) {
                         //     div.appendChild(document.createElement("span"));
                         //     i++;
                         // }
                         div.appendChild(cons.segment.createElement(inventory));
                         i++;
                     });
-                    // while (i < voicings.length) {
+                    // while (i &lt; voicings.length) {
                     //     div.appendChild(document.createElement("span"));
                     //     i++;
                     // }
@@ -971,7 +999,7 @@
         /**
          * The Segments in this vowel chart.
          * 
-         * @type {Array.<Segment>}
+         * @type {Array.&lt;Segment>}
          */
         segments;
 
@@ -986,7 +1014,7 @@
         /**
          * Create a new vowel chart for the given segments.
          * 
-         * @param {Array.<Segment>} segments - The Segments in this vowel chart.
+         * @param {Array.&lt;Segment>} segments - The Segments in this vowel chart.
          * @param {Inventory} [inventory] - The Inventory that the Segments come from.
          */
         constructor(segments, inventory) {
@@ -1012,22 +1040,22 @@
             div.classList.add("phonolo");
             div.classList.add("phonolo-vowels");
             div.innerHTML =
-                `<svg viewBox="-10 -10 120 ${HEIGHT + 20}" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <mask id="mask-${id}">
-                            <rect x="-10" y="-10" width="100%" height="100%" fill="white" />
-                        </mask>
-                    </defs>
-                    <g class="phonolo-vowels-trapezoid" mask="url(#mask-${id})" stroke="black" stroke-width="0.5">
-                        <line x1="100" y1="0" x2="0" y2="0" />
-                        <line x1="100" y1="${HEIGHT/3}" x2="${100*(1-RATIO)/3}" y2="${HEIGHT/3}" />
-                        <line x1="100" y1="${HEIGHT*2/3}" x2="${200*(1-RATIO)/3}" y2="${HEIGHT*2/3}" />
-                        <line x1="100" y1="${HEIGHT}" x2="${100*(1-RATIO)}" y2="${HEIGHT}" />
-                        <line x1="100" y1="0" x2="100" y2="${HEIGHT}" />
-                        <line x1="50" y1="0" x2="${100-100*RATIO/2}" y2="${HEIGHT}" />
-                        <line x1="0" y1="0" x2="${100-100*RATIO}" y2="${HEIGHT}" />
-                    </g>
-                </svg>`;
+                `&lt;svg viewBox="-10 -10 120 ${HEIGHT + 20}" xmlns="http://www.w3.org/2000/svg">
+                    &lt;defs>
+                        &lt;mask id="mask-${id}">
+                            &lt;rect x="-10" y="-10" width="100%" height="100%" fill="white" />
+                        &lt;/mask>
+                    &lt;/defs>
+                    &lt;g class="phonolo-vowels-trapezoid" mask="url(#mask-${id})" stroke="black" stroke-width="0.5">
+                        &lt;line x1="100" y1="0" x2="0" y2="0" />
+                        &lt;line x1="100" y1="${HEIGHT/3}" x2="${100*(1-RATIO)/3}" y2="${HEIGHT/3}" />
+                        &lt;line x1="100" y1="${HEIGHT*2/3}" x2="${200*(1-RATIO)/3}" y2="${HEIGHT*2/3}" />
+                        &lt;line x1="100" y1="${HEIGHT}" x2="${100*(1-RATIO)}" y2="${HEIGHT}" />
+                        &lt;line x1="100" y1="0" x2="100" y2="${HEIGHT}" />
+                        &lt;line x1="50" y1="0" x2="${100-100*RATIO/2}" y2="${HEIGHT}" />
+                        &lt;line x1="0" y1="0" x2="${100-100*RATIO}" y2="${HEIGHT}" />
+                    &lt;/g>
+                &lt;/svg>`;
             
             const svg = div.querySelector("svg");
             const mask = svg.querySelector("mask");
@@ -1089,3 +1117,26 @@
         VowelChart
     };
 })();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ConsonantTable.html">ConsonantTable</a></li><li><a href="FeatureBundle.html">FeatureBundle</a></li><li><a href="Inventory.html">Inventory</a></li><li><a href="Rule.html">Rule</a></li><li><a href="Segment.html">Segment</a></li><li><a href="VowelChart.html">VowelChart</a></li><li><a href="Word.html">Word</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Apr 16 2022 11:31:25 GMT-0400 (アメリカ東部夏時間)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
