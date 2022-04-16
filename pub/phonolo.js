@@ -2,13 +2,13 @@
     "use strict";
 
     /**
-     * Add an event listener to element that will create a popup.
-     * The event type is given by event.
+     * Add an event listener to the given element that will create a popup
+     * when it receives the given event.
      * The popup element should be created and returned by getPopup.
      * 
-     * @param {HTMLElement} element 
-     * @param {string} event 
-     * @param {function} getPopup 
+     * @param {HTMLElement} element - The element that listens for the event.
+     * @param {string} event - The type of event to listen for.
+     * @param {function} getPopup - A function that returns the popup element.
      */
     function addPopup(element, event, getPopup) {
         element.addEventListener(event, e => {
@@ -28,7 +28,8 @@
     /**
      * Clear all popups in the document.
      * 
-     * @param {Event} [e]
+     * @param {Event} [e] - The event causing the clear.
+     * @ignore
      */
     function clearPopups(e) {
         if (!e || !e.target.matches(".phonolo-popup, .phonolo-popup *"))
@@ -54,7 +55,7 @@
          * Keys are feature names.
          * Values are objects whose keys are feature values
          * and values are arrays containing the Segment objects
-         * in this.segments that have the corresponding value
+         * in this Inventory that have the corresponding value
          * for the corresponding feature.
          * 
          * @type {Object.<string, Object.<string, Array.<Segment>>>}
@@ -66,9 +67,9 @@
          * the feature system used by this inventory.
          * That is, the segments and features in this inventory
          * should be a subset of those in featureSystem.
-         * Optional.
+         * An Inventory can be its own feature system.
          * 
-         * @type {?Inventory}
+         * @type {Inventory}
          */
         featureSystem;
 
@@ -78,10 +79,11 @@
          * and values are feature specifications
          * (objects whose keys are features names and values are feature values).
          * If json is true then obj is assumed to be a JSON string.
+         * The returned Inventory object is its own feature system.
          * 
-         * @param {(Object.<string, Object.<string, string>>|string)} obj 
-         * @param {boolean} json 
-         * @returns {Inventory}
+         * @param {(Object.<string, Object.<string, string>>|string)} obj - The Segment symbols and features.
+         * @param {boolean} [json=false] - True iff obj is to be parsed as a JSON string.
+         * @returns {Inventory} An Inventory object parsed from obj.
          */
         static fromObject(obj, json = false) {
             if (json) obj = JSON.parse(obj);
@@ -100,10 +102,10 @@
          * all the given segments, which is taken in as an array of segment symbols.
          * If distinctive is true, only the distinctive features in segments are kept.
          * 
-         * @param {Inventory} featureSystem
-         * @param {string} segments
-         * @param {boolean} distinctive
-         * @returns {Inventory}
+         * @param {Inventory} featureSystem - The feature system used as a base.
+         * @param {string} segments - The symbols of the Segments in featureSystem to use.
+         * @param {boolean} [distinctive=true] - True iff only the features that distinguish some pair in segments should be kept.
+         * @returns {Inventory} An Inventory object with all the Segments in featureSystem specified by segments.
          */
         static fromFeatureSystem(featureSystem, segments, distinctive = true) {
             // Find distinctive features
@@ -144,6 +146,12 @@
             if (featureSystem) this.featureSystem = featureSystem;
         }
 
+        /**
+         * Add a Segment to this Inventory.
+         * 
+         * @param {Segment} segment - The Segment to add.
+         * @private
+         */
         addSegment(segment) {
             this.segments[segment.symbol] = segment;
             for (const feat in segment.features) {
@@ -155,6 +163,15 @@
             }
         }
 
+        /**
+         * Get the Segments in this Inventory that match a given feature specification.
+         * A feature specification is an object mapping features to feature values:
+         * { feat1: val1, feat2: val2, ... }.
+         * If no feature specification is given, return all Segments in this Inventory.
+         * 
+         * @param {Object.<string, string>} [features] - A feature specification.
+         * @returns {Array.<Segment>} The Segments in this Inventory matching the given features.
+         */
         getSegments(features) {
             return Object.entries(features ?? {}).reduce(
                 (prev, [feat, val]) => prev.filter(x => new Set(this.features[feat][val]).has(x)),
@@ -165,20 +182,20 @@
         /**
          * Return the list of possible values for a feature.
          * 
-         * @param {string} feature 
-         * @returns {Array.<string>}
+         * @param {string} feature - The feature to find the possible values for.
+         * @returns {Array.<string>} The possible values in this Inventory for feature.
          */
         getValues(feature) {
             return Object.keys(this.features[feature]);
         }
 
         /**
-         * Parse the given string as a transcription using the segments in this inventory
-         * and return an array of these segments.
+         * Parse the given string as a transcription using the Segments in this inventory
+         * and return an array of these Segments.
          * 
          * @throws Throws an error if the text cannot be fully parsed.
-         * @param {string} text
-         * @returns {Array.<Segment>}
+         * @param {string} text - A string comprised of symbols of Segments in this Inventory.
+         * @returns {Array.<Segment>} Array of Segments from this Inventory corresponding to text.
          */
         parse(text) {
             // Replacement pattern to escape all special regex symbols
@@ -212,14 +229,40 @@
 
 
     /**
-     * A class representing a segment.
+     * A class representing a phonological segment.
      */
     class Segment {
 
-        // Constants for use in rules
+        /**
+         * Null segment for use in rules.
+         * 
+         * @static
+         * @constant
+         */
         static NULL = new Segment("∅");
+
+        /**
+         * C segment for use in rules.
+         * 
+         * @static
+         * @constant
+         */
         static C = new Segment("C");
+
+        /**
+         * V segment for use in rules.
+         * 
+         * @static
+         * @constant
+         */
         static V = new Segment("V");
+
+        /**
+         * Word boundary segment for use in rules.
+         * 
+         * @static
+         * @constant
+         */
         static WORD_BOUNDARY = new Segment("#");
 
         /**
@@ -247,10 +290,12 @@
 
         /**
          * Create a new Segment with the given symbol, features, and name.
+         * The features are given as a feature specification:
+         * { feat1: val1, feat2: val2, ... }
          * 
-         * @param {string} symbol
-         * @param {Object.<string, string>} features
-         * @param {string} [name]
+         * @param {string} symbol - The symbol used to transcribe this segment.
+         * @param {Object.<string, string>} features - The feature specification for this segment.
+         * @param {string} [name] - The name of this segment.
          */
         constructor(symbol, features, name) {
             this.symbol = symbol.normalize();
@@ -259,12 +304,12 @@
         }
 
         /**
-         * Create and return a DOM element representing this segment.
-         * If an inventory is provided,
-         * the created DOM element will be interactive.
+         * Create and return a DOM element representing this Segment.
+         * If an inventory is provided, the created DOM element will be interactive.
          * 
-         * @param {Inventory} [inventory]
-         * @returns {HTMLElement}
+         * @param {Inventory} [inventory] - An Inventory to reference for interactive details.
+         * @param {boolean} [svg=false] - True iff the returned element is to be used in an SVG.
+         * @returns {HTMLElement} A DOM element representing this Segment.
          */
         createElement(inventory, svg = false) {
             const elem = svg ?
@@ -281,6 +326,13 @@
             return elem;
         }
 
+        /**
+         * Create and return a popup element for this Segment using info from a given inventory.
+         * 
+         * @param {Inventory} inventory - The Inventory to use for the popup info.
+         * @returns {HTMLElement} The popup element.
+         * @private
+         */
         createPopup(inventory) {
             const popup = document.createElement("div");
             popup.id = "phonolo-popup";
@@ -321,7 +373,7 @@
         text;
 
         /**
-         * Transcription of the word.
+         * Transcription of the word as an array of Segments.
          * 
          * @type {Array.<(Segment|string)>}
          */
@@ -339,15 +391,16 @@
          * The DOM element for this Word.
          * 
          * @type {HTMLElement}
+         * @private
          */
         element;
 
         /**
          * Create a new Word with the given text and transcription.
          * 
-         * @param {string} text
-         * @param {Array.<(Segment|string)>} transcription
-         * @param {Inventory} [inventory]
+         * @param {string} text - The original text of the word.
+         * @param {Array.<(Segment|string)>} transcription - Transcription of the word as an array of Segments.
+         * @param {Inventory} [inventory] - Inventory that the segments come from.
          */
         constructor(text, transcription, inventory) {
             this.text = text;
@@ -355,6 +408,12 @@
             if (inventory) this.inventory = inventory;
         }
 
+        /**
+         * Create a new DOM element representing this Word.
+         * 
+         * @returns {HTMLElement} A new DOM element for this Word.
+         * @private
+         */
         createElement() {
             this.element = document.createElement("span");
             this.element.classList.add("phonolo", "phonolo-word");
@@ -368,7 +427,7 @@
         /**
          * Get the DOM element for this Word.
          * 
-         * @returns {HTMLElement} the DOM element for this Word
+         * @returns {HTMLElement} The DOM element for this Word.
          */
         getElement() {
             if (!this.element) {
@@ -377,14 +436,24 @@
             return this.element;
         }
 
+        /**
+         * Make this Word's DOM element display the original text.
+         * 
+         * @private
+         */
         showText() {
             this.element.innerText = this.text;
         }
 
+        /**
+         * Make this Word's DOM element display the transcription.
+         * 
+         * @private
+         */
         showTranscription() {
-            this.element.replaceChildren(...this.transcription.map(phon => {
-                if (typeof phon === "string") return phon;
-                return phon.createElement(this.inventory);
+            this.element.replaceChildren(...this.transcription.map(segment => {
+                if (typeof segment === "string") return segment;
+                return segment.createElement(this.inventory);
             }));
         }
 
@@ -411,9 +480,10 @@
         editable;
 
         /**
-         * Stores the HTMLElement for this feature bundle if editable.
+         * Stores the DOM element for this feature bundle if editable.
          * 
          * @type {?HTMLElement}
+         * @private
          */
         element;
 
@@ -421,8 +491,8 @@
          * Create a new FeatureBundle with the given features.
          * If editable is true then the feature bundle element will be editable.
          * 
-         * @param {Object.<string, string>} features 
-         * @param {boolean} [editable=false]
+         * @param {Object.<string, string>} features - Feature specification for the bundle.
+         * @param {boolean} [editable=false] - True iff the FeatureBundle is to be user-editable.
          */
         constructor(features, editable = false) {
             this.features = features;
@@ -430,14 +500,20 @@
         }
 
         /**
-         * Create and return a DOM element representing this feature bundle.
-         * If an inventory is given, the created element
-         * will be interactive.
+         * Return a DOM element representing this FeatureBundle.
+         * If this FeatureBundle is editable, a new element will only be made
+         * if none already exists; otherwise, the cached element is returned.
+         * 
+         * If an inventory is given, the created element will interactively
+         * display info by referencing the given inventory.
+         * If this FeatureBundle is editable, the created element can be edited
+         * by dragging and dropping features into or out of it,
+         * and by clicking feature values to toggle them.
          * If brackets is true (default), the bundle will be drawn with brackets.
          * 
-         * @param {Inventory} [inventory]
-         * @param {boolean} [brackets=true]
-         * @returns 
+         * @param {Inventory} [inventory] - Inventory to use for interactive info.
+         * @param {boolean} [brackets=true] - True iff the element is to be drawn with brackets.
+         * @returns {HTMLElement} A DOM element for this FeatureBundle.
          */
         createElement(inventory, brackets = true) {
             if (this.element) return this.element;
@@ -590,6 +666,14 @@
             return elem;
         }
 
+        /**
+         * Create and return a popup element for this FeatureBundle.
+         * 
+         * @param {Object.<string, string>} features - Feature specification for the popup.
+         * @param {Inventory} inventory - Inventory to use for the popup info.
+         * @returns {HTMLElement} - A popup element.
+         * @private
+         */
         createPopup(features, inventory) {
             const popup = document.createElement("div");
             popup.classList.add("phonolo", "phonolo-popup", "phonolo-naturalclass");
@@ -665,12 +749,12 @@
         environmentRight;
 
         /**
-         * Create a new Rule with the given parameters.
+         * Create a new Rule with the given target, result, and optionally environment.
          * 
          * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} target
          * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} result
-         * @param {Array.<(Segment|FeatureBundle)>} [environmentLeft]
-         * @param {Array.<(Segment|FeatureBundle)>} [environmentRight]
+         * @param {Array.<(Segment|FeatureBundle)>} [environmentLeft=[]]
+         * @param {Array.<(Segment|FeatureBundle)>} [environmentRight=[]]
          */
         constructor(target, result, environmentLeft = [], environmentRight = []) {
             this.target = Array.isArray(target) ? target : [target];
@@ -680,11 +764,12 @@
         }
 
         /**
-         * Create and return a new DOM element representing this rule.
-         * If inventory is given, the created element will be interactive.
+         * Create and return a new DOM element representing this Rule.
+         * If inventory is given, the created element will interactively display
+         * information from the given inventory.
          * 
          * @param {Inventory} [inventory]
-         * @returns 
+         * @returns {HTMLElement} DOM element for this Rule.
          */
         createElement(inventory) {
             const elem = document.createElement("div");
@@ -734,19 +819,39 @@
     class ConsonantTable {
         
         /**
-         * The segments in the table.
+         * The Segments in the table.
          * 
          * @type {Array.<Segment>}
          */
         segments;
 
+        /**
+         * The Inventory that the Segments in this table come from.
+         * Optional.
+         * 
+         * @type {?Inventory}
+         */
         inventory;
 
+        /**
+         * Create a new consonant table from the given segments.
+         * 
+         * @param {Array.<Segment>} segments - The Segments in the table.
+         * @param {Inventory} [inventory] - Inventory that the Segments come from.
+         */
         constructor(segments, inventory) {
             this.segments = segments;
             if (inventory) this.inventory = inventory;
         }
 
+        /**
+         * Create and return a new DOM element for this ConsonantTable.
+         * If no inventory was provided for this ConsonantTable,
+         * an inventory must be provided here.
+         * 
+         * @param {Inventory} [inventory] - Inventory to use for classifying segments.
+         * @returns {HTMLElement} A DOM element for this ConsonantTable.
+         */
         createElement(inventory) {
             inventory = inventory ?? this.inventory;
 
@@ -830,19 +935,53 @@
         }
     }
 
+    /**
+     * A class representing a vowel chart.
+     */
     class VowelChart {
 
+        /**
+         * Value to ensure unique DOM IDs for created elements.
+         * 
+         * @static
+         * @private
+         * @ignore
+         */
         static _id = 0;
 
+        /**
+         * The Segments in this vowel chart.
+         * 
+         * @type {Array.<Segment>}
+         */
         segments;
 
+        /**
+         * The Inventory that the Segments come from.
+         * Optional.
+         * 
+         * @type {?Inventory}
+         */
         inventory;
 
+        /**
+         * Create a new vowel chart for the given segments.
+         * 
+         * @param {Array.<Segment>} segments - The Segments in this vowel chart.
+         * @param {Inventory} [inventory] - The Inventory that the Segments come from.
+         */
         constructor(segments, inventory) {
             this.segments = segments;
             if (inventory) this.inventory = inventory;
         }
 
+        /**
+         * Create and return a new DOM element for this VowelChart.
+         * If no inventory was provided for this VowelChart, an inventory must be provided.
+         * 
+         * @param {Inventory} [inventory] - Inventory to use for classifying vowels.
+         * @returns {HTMLElement} A DOM element for this VowelChart.
+         */
         createElement(inventory) {
             inventory = inventory ?? this.inventory;
 
