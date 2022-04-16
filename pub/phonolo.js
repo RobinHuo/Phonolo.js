@@ -449,9 +449,6 @@
                 elem.classList.add("phonolo-droppable");
             }
 
-            const list = document.createElement("table");
-            list.classList.add("phonolo-features");
-
             const createFeature = feature => {
                 const tr = document.createElement("tr");
                 tr.classList.add("phonolo-feature");
@@ -493,17 +490,17 @@
                     const shiftX = e.clientX - tr.getBoundingClientRect().left;
                     const shiftY = e.clientY - tr.getBoundingClientRect().top;
 
-                    let dragging = tr;
-                    if (!this.editable) {
-                        dragging = tr.cloneNode(true);
-                        dragging.classList.add("phonolo-drag");
-                        list.appendChild(dragging);
-                    }
+                    const dragging = this.editable ? tr : tr.cloneNode(true);
 
                     let currTarget = null;                    
                     const onmousemove = e => {
                         e.preventDefault();
-                        dragging.classList.add("phonolo-drag");
+
+                        if (!dragging.classList.contains("phonolo-drag")) {
+                            dragging.classList.add("phonolo-drag");
+                            if (!this.editable) tr.after(dragging);
+                        }
+
                         dragging.style.left = `${e.clientX - shiftX}px`;
                         dragging.style.top = `${e.clientY - shiftY}px`;
 
@@ -526,7 +523,7 @@
                             currTarget?.classList.remove("phonolo-hovering");
                             if (currTarget === elem) return;
                             if (currTarget) {
-                                const event = new CustomEvent("featuredrop", { detail: {
+                                const event = new CustomEvent("phonolo-featuredrop", { detail: {
                                     feature: feature,
                                     value: this.features[feature]
                                 } });
@@ -543,6 +540,8 @@
                 return tr;
             };
 
+            const list = document.createElement("table");
+            list.classList.add("phonolo-features");
             for (const feature in this.features) {
                 list.appendChild(createFeature(feature));
             }
@@ -574,8 +573,9 @@
                 }
             }
 
+            // Handle feature dropping
             if (this.editable) {
-                elem.addEventListener("featuredrop", ({ detail : { feature, value } }) => {
+                elem.addEventListener("phonolo-featuredrop", ({ detail : { feature, value } }) => {
                     this.features[feature] = value;
                     for (const tr of list.children) {
                         if (tr.lastElementChild.innerText === feature) {
