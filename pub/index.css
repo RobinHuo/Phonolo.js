@@ -20,11 +20,12 @@ html {
 
 p {
     font-weight: 400;
+    margin-bottom: 5px;
 }
 
 body > div {
     min-height: 100vh;
-    padding: 50px;
+    padding: 15px;
 }
 
 .title-page {
@@ -38,7 +39,7 @@ body > div {
     color: darkblue;
 
     background: rgb(255,255,255);
-    background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(0,202,255,1) 100%);
+    background: linear-gradient(0deg, rgba(255,255,255,1) 5%, rgba(0,202,255,1) 100%);
 }
 
 .title {
@@ -75,6 +76,12 @@ body > div {
     background-color: rgb(184, 255, 255);
 }
 
+pre {
+    border: 1px solid darkblue;
+    border-radius: 15px;
+    max-height: 95vh;
+}
+
 .examples {
     font-size: 1.6rem;
     border: 2px solid darkblue;
@@ -85,7 +92,7 @@ body > div {
 
 .examples > h1 {
     font-size: 4.5rem;
-    font-weight: normal;
+    font-weight: bold;
     text-align: center;
     margin-bottom: 50px;
 }
@@ -110,6 +117,31 @@ body > div {
     line-height: 1.5;
 }
 
+.examples .example-grid {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    grid-template-rows: min-content min-content;
+    grid-template-areas:
+        "desc code"
+        "ex code";
+    column-gap: 30px;
+    row-gap: 50px;
+    margin-bottom: 80px;
+}
+
+.example-grid > div {
+    height: fit-content;
+}
+
+.example-grid .example {
+    grid-area: ex;
+    height: unset;
+}
+
+.example-grid pre {
+    grid-area: code;
+}
+
 .example {
     margin: 20px;
     font-size: 2rem;
@@ -120,11 +152,17 @@ body > div {
     font-size: 1.6em;
 }
 
+#editable {
+    gap: unset;
+    justify-content: space-between;
+}
+
 .flex {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    gap: 30px;
+    justify-content: center;
+    gap: 80px;
+    /* flex-wrap: wrap; */
 }
 
 .col {

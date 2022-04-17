@@ -3,14 +3,21 @@
     <head>
         <meta charset="UTF-8"/>
         <title>Phonolo.js</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,500&display=swap" rel="stylesheet">
+
         <link rel="stylesheet" href="./index.css">
         <link rel="stylesheet" href="./phonolo.css">
         <script src="./phonolo.js" defer></script>
         <script src="./hayes.js" defer></script>
         <script src="./index.js" defer></script>
+        
+        <!-- Fonts from Google -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,500&display=swap" rel="stylesheet">
+
+        <!-- Prism.js for syntax highlighting -->
+        <link href="./prism/prism.css" rel="stylesheet" />
+        <script src="./prism/prism.js" defer></script>
     </head>
     <body>
         <div class="title-page">
@@ -25,85 +32,288 @@
         <div id="examples">
             <div class="examples">
                 <h1>Examples</h1>
-                <div>
-                    <h2>
-                        Interactive Transcriptions
-                    </h2>
-                    <h3>
-                        Easily add an interactive transcription to a string of text.
-                    </h3>
-                    <p>
-                        Hover over a word to reveal its transcription and view segmental info.
-                        <br>
-                        Click a segment to see its name and features.
-                    </p>
+                <div class="example-grid">
+                    <div>
+                        <h2>
+                            Interactive Transcriptions
+                        </h2>
+                        <h3>
+                            Easily add an interactive transcription to a string of text.
+                        </h3>
+                        <p>
+                            Hover over a word to reveal its transcription and view segmental info.
+                        </p>
+                        <p>
+                            Click a segment to see its name and features.
+                        </p>
+                    </div>
                     <div id="transcription" class="example"></div>
+                    <pre><code class="language-js">// Sentence as an array of words
+const sentence = "the quick brown fox jumps over the lazy dog".split(" ");
+// Phonemic transcription of each word
+const phonemic = [
+    "ðə",
+    "kwɪk",
+    "bɹaʊn",
+    "fɑks",
+    "d͡ʒʌmps",
+    "ovəɹ",
+    "ðə",
+    "lezi",
+    "dɑɡ"
+];
+for (let i = 0; i &lt; sentence.length; i++) {
+    // Parse the transcription into its segments
+    const trans = english.parse(phonemic[i]);
+    // Make a Word object with the original word and its parsed transcription
+    const word = new Word(sentence[i], trans, english);
+    // Display the Word object
+    div.append(word.getElement(), " ");
+}</code></pre>
                 </div>
-                <div>
-                    <h2>Consonant Tables</h2>
-                    <h3>
-                        Make pretty consonant tables just by specifying the segments.
-                    </h3>
-                    <p>
-                        Click on a consonant to see its name and features.
-                    </p>
+                <div class="example-grid">
+                    <div>
+                        <h2>Consonant Tables</h2>
+                        <h3>
+                            Make pretty consonant tables just by specifying the segments.
+                        </h3>
+                        <p>
+                            Click on a consonant to see its name and features.
+                        </p>
+                    </div>
                     <div id="consonants" class="example flex col"></div>
+                    <pre><code class="language-js">// Consonant tables
+const tables = [
+    // Consonant table with all the consonants of English
+    new ConsonantTable(
+        english.getSegments(),
+        english
+    ),
+    // The [-continuant] consonants of Japanese
+    new ConsonantTable(
+        japanese.getSegments({ "continuant": "-" }),
+        japanese
+    )
+];
+// Display the tables
+tables.forEach(item => {
+    div.appendChild(item.createElement());
+});</code></pre>
                 </div>
-                <div>
-                    <h2>Vowel Charts</h2>
-                    <h3>
-                        Make vowel diagrams just by specifying the segments.
-                    </h3>
-                    <p>
-                        Click on a vowel to see its name and features.
-                    </p>
+                <div class="example-grid">
+                    <div>
+                        <h2>Vowel Charts</h2>
+                        <h3>
+                            Make vowel diagrams just by specifying the segments.
+                        </h3>
+                        <p>
+                            Click on a vowel to see its name and features.
+                        </p>
+                    </div>
                     <div id="vowels" class="example flex"></div>
+                    <pre><code class="language-js">// Vowel diagrams
+const vowels = [
+    // Vowel diagram with the vowels of English
+    new VowelChart(
+        english.getSegments(),
+        english
+    ),
+    // Vowel diagram with the vowels of Japanese
+    new VowelChart(
+        japanese.getSegments(),
+        japanese
+    ),
+];
+// Display the diagrams
+vowels.forEach(item => {
+    div.appendChild(item.createElement());
+});</code></pre>
                 </div>
-                <div>
-                    <h2>Feature Bundles</h2>
-                    <h3>
-                        Create properly formatted feature bundles
-                        by specifying the features.
-                    </h3>
-                    <p>
-                        Click on a feature to see the segments
-                        in a given inventory that have that feature.
-                        <br>
-                        Click on the brackets to see the segments
-                        that have all the features in the bundle.
-                    </p>
+                <div class="example-grid">
+                    <div>
+                        <h2>Feature Bundles</h2>
+                        <h3>
+                            Create properly formatted feature bundles
+                            by specifying the features.
+                        </h3>
+                        <p>
+                            Click on a feature to see the segments
+                            in a given inventory that have that feature.
+                        </p>
+                        <p>
+                            Click on the brackets to see the segments
+                            that have all the features in the bundle.
+                        </p>
+                    </div>
                     <div id="features" class="example flex"></div>
+                    <pre><code class="language-js">// Feature bundles
+const bundles = [
+    new FeatureBundle({
+        "syllabic": "+",
+        "high": "+",
+        "front": "+"
+    }),
+    new FeatureBundle({
+        "syllabic": "-",
+        "consonantal": "-",
+        "voice": "+"
+    }),
+    new FeatureBundle({
+        "syllabic": "-",
+        "consonantal": "+",
+        "sonorant": "-",
+        "continuant": "+",
+        "approximant": "-",
+        "voice": "-",
+        "spread gl": "-",
+        "LABIAL": "-",
+        "CORONAL": "+",
+        "anterior": "+",
+        "distributed": "+",
+        "strident": "-",
+        "lateral": "-",
+        "DORSAL": "-",
+    }),
+];
+bundles.forEach(item => {
+    div.appendChild(item.createElement(english));
+});</code></pre>
                 </div>
-                <div>
-                    <h2>Rules</h2>
-                    <h3>
-                        Create classic phonological rules easily.
-                    </h3>
-                    <p>
-                    </p>
+                <div class="example-grid">
+                    <div>
+                        <h2>Rules</h2>
+                        <h3>
+                            Create linear rules by specifying the feature bundle or segment
+                            for each position.
+                        </h3>
+                        <p>
+                            Click on a segment or feature bundle to view details.
+                        </p>
+                    </div>
                     <div id="rules" class="example flex col"></div>
+                    <pre><code class="language-js">// Rules
+const rules = [
+
+    new Rule(
+        new FeatureBundle({
+            "syllabic": "-",
+            "continuant": "-",
+            "voice": "+"
+        }),
+        new FeatureBundle({
+            "voice": "-"
+        }),
+        [
+            new FeatureBundle({
+                "syllabic": "-",
+                "continuant": "-",
+                "voice": "-"
+            })
+        ],
+        [Segment.WORD_BOUNDARY]
+    ),
+
+    new Rule(
+        Segment.NULL,
+        english.segments["p"],
+        [
+            english.segments["m"]
+        ],
+        [
+            new FeatureBundle({
+                "syllabic": "-",
+                "continuant": "-",
+                "voice": "-",
+                "LABIAL": "-"
+            })
+        ]
+    )
+
+];
+rules.forEach(item => {
+    div.appendChild(item.createElement(english));
+});</code></pre>
                 </div>
-                <div>
-                    <h2>Interactively Edit Feature Bundles</h2>
-                    <h3>
-                        Toggle and Drag Features Between Bundles
-                    </h3>
-                    <p>
-                        In editable feature bundles,
-                        click on a feature value to toggle it,
-                        or change the features in a bundle
-                        by dragging features in or out.
-                        <br>
-                        The feature bundles below are editable.
-                        Try dragging their features and toggling their values.
-                        <br>
-                        You can drag features from uneditable bundles to copy them,
-                        but you cannot drag features into uneditable bundles.
-                        Try it with the bundles above.
-                        <br>
-                        Dragging a feature out of an editable bundle deletes the feature.
-                    </p>
+                <div class="example-grid">
+                    <div>
+                        <h2>Interactively Edit Feature Bundles</h2>
+                        <h3>
+                            Toggle and Drag Features Between Bundles
+                        </h3>
+                        <p>
+                            In editable feature bundles,
+                            click on a feature value to toggle it,
+                            or change the features in a bundle
+                            by dragging features in or out.
+                        </p>
+                        <p>
+                            The feature bundles below are editable.
+                            Try dragging their features and toggling their values.
+                        </p>
+                        <p>
+                            You can drag features from uneditable bundles to copy them,
+                            but you cannot drag features into uneditable bundles.
+                            Try it with the bundles above.
+                        </p>
+                        <p>
+                            Dragging a feature out of an editable bundle deletes the feature.
+                        </p>
+                    </div>
                     <div id="editable" class="example flex"></div>
+                    <pre><code class="language-js">// Editable feature bundles
+const editable = [
+
+    new FeatureBundle({
+        "syllabic": "-",
+        "consonantal": "+",
+        "sonorant": "-",
+        "continuant": "+",
+        "approximant": "-",
+        "voice": "-",
+        "spread gl": "-",
+        "LABIAL": "-",
+        "CORONAL": "+",
+        "anterior": "+",
+        "distributed": "+",
+        "strident": "-",
+        "lateral": "-",
+        "DORSAL": "-",
+    }, true), // pass in true to make it editable
+
+    new FeatureBundle({
+        "syllabic": "+",
+        "consonantal": "-",
+        "DORSAL": "+",
+        "high": "-",
+        "low": "-",
+        "front": "-",
+        "back": "-",
+        "tense": "-"
+    }, true),
+
+    new Rule(
+        new FeatureBundle({
+            "syllabic": "-",
+            "continuant": "-",
+            "voice": "+"
+        }, true),
+        new FeatureBundle({
+            "voice": "-"
+        }, true),
+        [
+            new FeatureBundle({
+                "syllabic": "-",
+                "continuant": "-",
+                "voice": "-"
+            }, true)
+        ],
+        [Segment.WORD_BOUNDARY]
+    )
+
+];
+for (const elem of editable) {
+    div.appendChild(elem.createElement(english));
+}</code></pre>
                 </div>
             </div>
         </div>

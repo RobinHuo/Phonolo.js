@@ -30,7 +30,9 @@ const japanese = Inventory.fromFeatureSystem(features, [
 ]);
 
 const transcriptionDiv = document.querySelector("#transcription");
+// Sentence as an array of words
 const sentence = "the quick brown fox jumps over the lazy dog".split(" ");
+// Phonemic transcription of each word
 const phonemic = [
     "ðə",
     "kwɪk",
@@ -43,43 +45,55 @@ const phonemic = [
     "dɑɡ"
 ];
 for (let i = 0; i < sentence.length; i++) {
+    // Parse the transcription into its segments
     const trans = english.parse(phonemic[i]);
+    // Make a Word object with the original word and its parsed transcription
     const word = new Word(sentence[i], trans, english);
+    // Display the Word object
     transcriptionDiv.append(word.getElement(), " ");
 }
 
 // Consonant table
 const consDiv = document.querySelector("#consonants");
+// Consonant tables
 const tables = [
+    // Consonant table with all the consonants of English
     new ConsonantTable(
         english.getSegments(),
         english
     ),
+    // Consonant table with the [-continuant] consonants of Japanese
     new ConsonantTable(
-        japanese.getSegments(),
+        japanese.getSegments({ "continuant": "-" }),
         japanese
-    ),
+    )
 ];
+// Display the tables
 tables.forEach(item => {
     consDiv.appendChild(item.createElement());
 });
 
 const vowelsDiv = document.querySelector("#vowels");
+// Vowel diagrams
 const vowels = [
+    // Vowel diagram with the vowels of English
     new VowelChart(
         english.getSegments(),
         english
     ),
+    // Vowel diagram with the vowels of Japanese
     new VowelChart(
         japanese.getSegments(),
         japanese
     ),
 ];
+// Display the diagrams
 vowels.forEach(item => {
     vowelsDiv.appendChild(item.createElement());
 });
 
 const featureBundles = document.querySelector("#features");
+// Feature bundles
 const bundles = [
     new FeatureBundle({
         "syllabic": "+",
@@ -114,6 +128,7 @@ bundles.forEach(item => {
 
 const rulesDiv = document.querySelector("#rules");
 const rules = [
+
     new Rule(
         new FeatureBundle({
             "syllabic": "-",
@@ -132,6 +147,7 @@ const rules = [
         ],
         [Segment.WORD_BOUNDARY]
     ),
+
     new Rule(
         Segment.NULL,
         english.segments["p"],
@@ -146,13 +162,8 @@ const rules = [
                 "LABIAL": "-"
             })
         ]
-    ),
-    new Rule(
-        english.segments["t"],
-        english.segments["ɾ"],
-        [Segment.V],
-        [Segment.V]
     )
+
 ];
 rules.forEach(item => {
     rulesDiv.appendChild(item.createElement(english));
@@ -160,6 +171,7 @@ rules.forEach(item => {
 
 const editDiv = document.querySelector("#editable");
 const editable = [
+
     new FeatureBundle({
         "syllabic": "-",
         "consonantal": "+",
@@ -176,6 +188,7 @@ const editable = [
         "lateral": "-",
         "DORSAL": "-",
     }, true),
+
     new FeatureBundle({
         "syllabic": "+",
         "consonantal": "-",
@@ -186,6 +199,7 @@ const editable = [
         "back": "-",
         "tense": "-"
     }, true),
+
     new Rule(
         new FeatureBundle({
             "syllabic": "-",
@@ -203,7 +217,8 @@ const editable = [
             }, true)
         ],
         [Segment.WORD_BOUNDARY]
-    ),
+    )
+
 ];
 for (const elem of editable) {
     editDiv.appendChild(elem.createElement(english));
