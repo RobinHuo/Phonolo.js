@@ -78,7 +78,7 @@
         /**
          * Return an Inventory object parsed from obj.
          * obj should have a member object named "features"
-         * whose keys are Segment symbols * and values are feature specifications
+         * whose keys are Segment symbols and values are feature specifications
          * (objects whose keys are features names and values are feature values).
          * The returned Inventory object is its own feature system.
          * 
@@ -514,6 +514,8 @@
 
         /**
          * Feature specification for this feature bundle.
+         * A feature specification is an object mapping features to feature values:
+         * { feat1: val1, feat2: val2, ... }.
          * 
          * @type {Object.<string, string>}
          */
@@ -798,10 +800,14 @@
         /**
          * Create a new Rule with the given target, result, and optionally environment.
          * 
-         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} target
-         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} result
-         * @param {Array.<(Segment|FeatureBundle)>} [environmentLeft=[]]
-         * @param {Array.<(Segment|FeatureBundle)>} [environmentRight=[]]
+         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} target - 
+         *     The target of the rule.
+         * @param {(Array.<(Segment|FeatureBundle)>|(Segment|FeatureBundle))} result - 
+         *     The result of the rule.
+         * @param {Array.<(Segment|FeatureBundle)>} [environmentLeft=[]] - 
+         *     The left environment for the rule.
+         * @param {Array.<(Segment|FeatureBundle)>} [environmentRight=[]] - 
+         *     The right environment for the rule.
          */
         constructor(target, result, environmentLeft = [], environmentRight = []) {
             this.target = Array.isArray(target) ? target : [target];
@@ -893,7 +899,7 @@
 
         /**
          * Create and return a new DOM element for this ConsonantTable.
-         * Non-consonants are ignored.
+         * Non-consonant segments in this ConsonantTable are ignored.
          * If no inventory was provided for this ConsonantTable,
          * an inventory must be provided here.
          * 
@@ -1025,7 +1031,7 @@
 
         /**
          * Create and return a new DOM element for this VowelChart.
-         * Non-vowels are ignored.
+         * Non-vowel segments in this VowelChart are ignored.
          * If no inventory was provided for this VowelChart, an inventory must be provided.
          * 
          * @param {Inventory} [inventory] - Inventory to use for classifying vowels.
