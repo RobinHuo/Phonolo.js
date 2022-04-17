@@ -129,6 +129,14 @@ pre {
     margin-bottom: 80px;
 }
 
+#setup {
+    grid-template-rows: 1fr min-content;
+}
+
+#setup > pre {
+    height: fit-content;
+}
+
 .example-grid > div {
     height: fit-content;
 }

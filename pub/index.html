@@ -32,6 +32,54 @@
         <div id="examples">
             <div class="examples">
                 <h1>Examples</h1>
+                <div id="setup" class="example-grid">
+                    <div>
+                        <h2>
+                            Setup
+                        </h2>
+                        <h3>
+                            Use the provided feature system for easy setup.
+                        </h3>
+                        <p>
+                            Access the API via the <code>Phonolo</code> global object.
+                        </p>
+                        <p>
+                            Interactivity requires specification of a phonological feature system.
+                            Use our base feature system by including
+                            <code>hayes.js</code>
+                            in your HTML file and then loading it as shown here.
+                        </p>
+                    </div>
+                    <pre class="example"><code class="language-html">&lt;script src="./hayes.js">&lt;/script></code></pre>
+                    <pre><code class="language-js">// Import Phonolo.js library
+const {
+    Inventory,
+    Segment,
+    Word,
+    FeatureBundle,
+    Rule,
+    ConsonantTable,
+    VowelChart
+} = Phonolo;
+
+// Feature system of Bruce Hayes
+// https://linguistics.ucla.edu/people/hayes/120a/Index.htm#features
+const featureSystem = Inventory.fromObject(hayes);
+
+// Just the phonemes of English
+const english = Inventory.fromFeatureSystem(featureSystem, [
+    "p", "t", "k", "b", "d", "ɡ", "t͡ʃ", "d͡ʒ", "f", "θ", "s", "ʃ", "h", "v",
+    "ð", "z", "ʒ", "m", "n", "ŋ", "ɹ", "j", "l", "w", "i", "u", "ɪ", "ʊ", "e",
+    "o", "ɛ",  "ə", "ʌ", "ɔ", "æ", "ɑ", "a", "ɾ"
+]);
+
+// Some sounds of Japanese
+const japanese = Inventory.fromFeatureSystem(featureSystem, [
+    "a", "i", "u", "e", "o",
+    "p", "b", "t", "d", "k", "ɡ", "t͡s", "t͡ɕ", "d͡ʑ", "ɸ", "s", "z", "ɕ", "ʑ",
+    "ç", "h", "m", "n", "ɲ", "ɴ", "ɾ", "w", "j"
+]);</code></pre>
+                </div>
                 <div class="example-grid">
                     <div>
                         <h2>
