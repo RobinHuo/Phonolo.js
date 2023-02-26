@@ -1,9 +1,9 @@
 # Phonolo.js
+Phonolo.js is a JavaScript library for interactively displaying common phonetic/phonological diagrams.
+Originally made for CSC309 (Programming on the Web) Winter 2022 at the University of Toronto.
 
-Deployed webpage at [https://shrouded-depths-86154.herokuapp.com/](https://shrouded-depths-86154.herokuapp.com/).
-
-Docs at [https://shrouded-depths-86154.herokuapp.com/docs/](https://shrouded-depths-86154.herokuapp.com/docs/).
-
+The demo page can be found at `index.html`, or hosted [here](https://robinhuo.github.io/Phonolo.js/).
+It uses [Prism.js](https://prismjs.com/).
 ## Getting Started
 To use Phonolo.js, include `phonolo.js` and `phonolo.css` in your HTML file:
 ```
